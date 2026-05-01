@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BRIEF / Графический дизайн</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B0B0C;
+    --bg-2:#111114;
+    --surface:#16161A;
+    --surface-2:#1C1C21;
+    --line:#26262C;
+    --line-2:#34343C;
+    --line-bright:#48484F;
+    --text:#EFEDE7;
+    --text-2:#B8B5AB;
+    --muted:#6E6B62;
+    --accent:#D8FF38;
+    --accent-soft:rgba(216,255,56,.08);
+    --red:#FF5538;
+    --shadow: 0 1px 0 rgba(255,255,255,.03) inset, 0 24px 48px -16px rgba(0,0,0,.6);
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0;}
+  html,body{
+    background:var(--bg); color:var(--text);
+    font-family:'Manrope',-apple-system,sans-serif; font-weight:400;
+    -webkit-font-smoothing:antialiased; min-height:100vh;
+    overflow-x:hidden;
+  }
+
+  body::before{
+    content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+    background-size: 80px 80px;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, black, transparent 70%);
+  }
+  body::after{
+    content:""; position:fixed; top:-200px; right:-200px; width:600px; height:600px;
+    background:radial-gradient(circle, rgba(216,255,56,.12), transparent 60%);
+    z-index:0; pointer-events:none; filter:blur(80px);
+  }
+
+  .nav{ position:sticky; top:0; z-index:50; background:rgba(11,11,12,.7); backdrop-filter:blur(20px) saturate(140%); -webkit-backdrop-filter:blur(20px) saturate(140%); border-bottom:1px solid var(--line); }
+  .nav-inner{ max-width:1320px; margin:0 auto; padding:18px 32px; display:flex; align-items:center; justify-content:space-between; gap:24px; }
+  .logo{ display:flex; align-items:center; gap:14px;}
+  .logo-mark{ width:34px; height:34px; border-radius:8px; background:var(--accent); display:grid; place-items:center; color:#000; font-family:'Bricolage Grotesque',sans-serif; font-weight:800; font-size:18px; transform:rotate(-4deg); box-shadow:0 0 24px rgba(216,255,56,.4); }
+  .logo-text{ display:flex; flex-direction:column; line-height:1;}
+  .logo-name{ font-family:'Bricolage Grotesque',sans-serif; font-weight:700; font-size:18px; letter-spacing:-.02em;}
+  .logo-sub{ font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.14em; margin-top:4px; text-transform:uppercase;}
+
+  .tabs{ display:flex; gap:4px; padding:5px; background:var(--surface); border:1px solid var(--line); border-radius:12px;}
+  .tab{ border:0; background:transparent; padding:9px 18px; border-radius:8px; font-family:'Manrope',sans-serif; font-size:13px; font-weight:500; color:var(--text-2); cursor:pointer; display:flex; align-items:center; gap:8px; transition:all .2s ease; }
+  .tab:hover{ color:var(--text); background:var(--surface-2);}
+  .tab.active{ background:var(--accent); color:#000; font-weight:600;}
+  .tab-count{ font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:500; background:rgba(0,0,0,.18); padding:2px 8px; border-radius:999px; min-width:24px; text-align:center; }
+  .tab:not(.active) .tab-count{ background:var(--bg); color:var(--text-2);}
+
+  .nav-meta{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.08em; display:flex; align-items:center; gap:8px; }
+  .nav-meta .live{ width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent); animation:pulse 2s ease-in-out infinite;}
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.4;}}
+
+  .wrap{ max-width:1320px; margin:0 auto; padding:64px 32px 96px; position:relative; z-index:1;}
+
+  .hero{ border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:48px 0 56px; margin-bottom:56px; position:relative; }
+  .hero-grid{ display:grid; grid-template-columns:1fr auto; gap:48px; align-items:end;}
+  .crumb{ display:inline-flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.16em; margin-bottom:32px; }
+  .crumb-tag{ padding:4px 10px; background:var(--accent-soft); color:var(--accent); border:1px solid rgba(216,255,56,.2); border-radius:4px; }
+  .crumb-sep{ opacity:.4;}
+
+  h1{ font-family:'Bricolage Grotesque',sans-serif; font-weight:500; font-size:clamp(56px,9vw,128px); line-height:.9; letter-spacing:-.04em; color:var(--text); }
+  h1 .accent{ color:var(--accent); font-weight:600; font-style:italic; text-shadow:0 0 60px rgba(216,255,56,.3); }
+  h1 .strike{ position:relative; font-weight:300; }
+  h1 .strike::after{ content:""; position:absolute; left:-2%; right:-2%; top:55%; height:3px; background:var(--red); transform:rotate(-2deg); }
+
+  .hero-side{ display:flex; flex-direction:column; gap:24px; padding-bottom:8px; min-width:280px; }
+  .hero-side p{ font-size:14px; line-height:1.6; color:var(--text-2); max-width:36ch;}
+  .stat-strip{ display:grid; grid-template-columns:repeat(3,1fr); gap:0; border:1px solid var(--line); border-radius:12px; overflow:hidden; background:var(--surface); }
+  .stat{ padding:18px 20px; border-right:1px solid var(--line);}
+  .stat:last-child{ border-right:0;}
+  .stat-num{ font-family:'Bricolage Grotesque',sans-serif; font-size:34px; font-weight:600; line-height:1; color:var(--text); letter-spacing:-.02em; }
+  .stat-num .unit{ font-size:14px; color:var(--muted); margin-left:2px; font-weight:400;}
+  .stat-lbl{ font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.14em; color:var(--muted); margin-top:8px;}
+
+  .form-wrap{ display:grid; grid-template-columns:300px 1fr; gap:32px;}
+  .form-aside{ position:sticky; top:120px; align-self:start;}
+  .stepper{ display:flex; flex-direction:column; gap:2px;}
+  .step{ display:flex; align-items:flex-start; gap:14px; padding:16px 18px; border:1px solid var(--line); background:var(--surface); cursor:pointer; transition:all .2s ease; border-radius:10px; }
+  .step + .step{ margin-top:2px;}
+  .step:hover{ border-color:var(--line-2);}
+  .step.active{ border-color:var(--accent); background:linear-gradient(135deg, var(--accent-soft), transparent); box-shadow:0 0 0 1px var(--accent), 0 8px 24px -8px rgba(216,255,56,.2); }
+  .step-num{ width:28px; height:28px; flex-shrink:0; border-radius:6px; background:var(--bg); border:1px solid var(--line-2); display:grid; place-items:center; font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--text-2); }
+  .step.active .step-num{ background:var(--accent); color:#000; border-color:var(--accent);}
+  .step.done .step-num{ background:var(--text); color:#000; border-color:var(--text);}
+  .step.done .step-num::after{ content:"✓";}
+  .step.done .step-num .num{ display:none;}
+  .step-label{ font-size:13px; font-weight:500;}
+  .step-desc{ font-size:11.5px; color:var(--muted); margin-top:3px; line-height:1.4;}
+
+  .timer-card{ margin-top:20px; padding:18px; background:var(--surface); border:1px solid var(--line); border-radius:10px; position:relative; overflow:hidden; }
+  .timer-card::before{ content:""; position:absolute; top:0; left:0; bottom:0; width:3px; background:var(--accent); }
+  .timer-label{ font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.14em; color:var(--muted); margin-bottom:8px;}
+  .timer-value{ font-family:'Bricolage Grotesque',sans-serif; font-size:32px; font-weight:600; line-height:1; letter-spacing:-.02em; }
+  .timer-value .unit{ font-size:14px; color:var(--text-2); margin-left:4px; font-weight:400;}
+  .timer-desc{ font-size:11.5px; color:var(--text-2); margin-top:8px; line-height:1.4;}
+
+  .form-panel{ background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:var(--shadow); }
+  .section{ padding:36px 40px; border-bottom:1px solid var(--line); position:relative; }
+  .section:last-of-type{ border-bottom:0;}
+  .section-head{ display:flex; align-items:flex-start; gap:18px; margin-bottom:28px; padding-bottom:18px; border-bottom:1px dashed var(--line); }
+  .section-marker{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--accent); letter-spacing:.16em; padding-top:8px; flex-shrink:0; }
+  .section-titles h3{ font-family:'Bricolage Grotesque',sans-serif; font-weight:500; font-size:28px; letter-spacing:-.02em; line-height:1.1; margin-bottom:6px; }
+  .section-titles h3 .ital{ font-style:italic; font-weight:400; color:var(--text-2);}
+  .section-titles p{ font-size:13px; color:var(--muted); line-height:1.5;}
+
+  .field{ margin-bottom:24px;}
+  .field:last-child{ margin-bottom:0;}
+  .field-row{ display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  .field-row .field{ margin-bottom:0;}
+
+  label.lbl{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; font-size:13px; font-weight:500; color:var(--text); margin-bottom:10px; }
+  label.lbl .req{ color:var(--accent);}
+  label.lbl .hint{ font-weight:400; font-size:11.5px; color:var(--muted); font-family:'JetBrains Mono',monospace; letter-spacing:.04em; text-align:right; max-width:50%; }
+
+  .input,.textarea,select{ width:100%; background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:14px 16px; font-family:'Manrope',sans-serif; font-size:14px; color:var(--text); transition:all .2s ease; }
+  .textarea{ resize:vertical; min-height:90px; line-height:1.55; font-family:inherit;}
+  .input:hover,.textarea:hover{ border-color:var(--line-2);}
+  .input:focus,.textarea:focus,select:focus{ outline:none; border-color:var(--accent); background:var(--surface-2); box-shadow:0 0 0 4px rgba(216,255,56,.08); }
+  .input::placeholder,.textarea::placeholder{ color:var(--muted);}
+  .input.invalid,.textarea.invalid{ border-color:var(--red); box-shadow:0 0 0 4px rgba(255,85,56,.08); animation:shake .35s ease; }
+  @keyframes shake{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-6px);} 75%{transform:translateX(6px);} }
+
+  input[type="date"]{ font-family:'JetBrains Mono',monospace; font-size:13px; color-scheme:dark; }
+  input[type="date"]::-webkit-calendar-picker-indicator{ filter:invert(.7); cursor:pointer; opacity:.6; }
+
+  .formats{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px;}
+  @media(max-width:760px){ .formats{ grid-template-columns:repeat(2,1fr);}}
+  .fmt-card{ cursor:pointer; padding:20px 16px; background:var(--bg); border:1px solid var(--line); border-radius:10px; transition:all .2s ease; position:relative; text-align:center; }
+  .fmt-card:hover{ border-color:var(--line-2); transform:translateY(-1px);}
+  .fmt-card.selected{ border-color:var(--accent); background:var(--accent-soft); box-shadow:0 0 0 1px var(--accent), 0 12px 24px -12px rgba(216,255,56,.3); }
+  .fmt-card.selected::after{ content:""; position:absolute; top:8px; right:8px; width:14px; height:14px; background:var(--accent); border-radius:50%; box-shadow:0 0 0 3px var(--bg), 0 0 12px rgba(216,255,56,.6); }
+  .fmt-icon{ width:32px; height:32px; margin:0 auto 10px; display:grid; place-items:center; color:var(--text-2); }
+  .fmt-card.selected .fmt-icon{ color:var(--accent);}
+  .fmt-name{ font-size:14px; font-weight:600; color:var(--text);}
+  .fmt-sub{ font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--muted); margin-top:4px; letter-spacing:.06em;}
+
+  .chips{ display:flex; flex-wrap:wrap; gap:8px;}
+  .chip{ cursor:pointer; padding:11px 16px; background:var(--bg); border:1px solid var(--line); border-radius:8px; font-family:'JetBrains Mono',monospace; font-size:12.5px; transition:all .15s ease; display:inline-flex; align-items:center; gap:8px; color:var(--text); }
+  .chip::before{ content:""; width:14px; height:14px; border:1.5px solid var(--line-bright); border-radius:3px; transition:all .15s ease; }
+  .chip:hover{ border-color:var(--line-2);}
+  .chip.checked{ background:var(--accent); color:#000; border-color:var(--accent); }
+  .chip.checked::before{ background:#000; border-color:#000; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D8FF38' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='20 6 9 17 4 12'/></svg>"); background-size:80%; background-position:center; background-repeat:no-repeat; }
+  .chip-input{ display:none;}
+
+  .submit-bar{ background:var(--bg-2); padding:28px 40px; display:flex; align-items:center; justify-content:space-between; gap:20px; border-top:1px solid var(--line); }
+  .submit-note{ font-size:12px; color:var(--muted); max-width:400px; line-height:1.5; display:flex; align-items:flex-start; gap:10px; }
+  .submit-note svg{ color:var(--accent); flex-shrink:0; margin-top:1px;}
+  .btn-row{ display:flex; gap:10px;}
+  .btn{ border:0; cursor:pointer; padding:14px 24px; border-radius:10px; font-family:'Manrope',sans-serif; font-size:14px; font-weight:600; display:inline-flex; align-items:center; gap:8px; transition:all .2s ease; letter-spacing:-.005em; }
+  .btn-primary{ background:var(--accent); color:#000; box-shadow:0 0 0 1px var(--accent), 0 12px 32px -12px rgba(216,255,56,.5); }
+  .btn-primary:hover{ transform:translateY(-2px); box-shadow:0 0 0 1px var(--accent), 0 18px 40px -12px rgba(216,255,56,.7); }
+  .btn-primary:active{ transform:translateY(0);}
+  .btn-primary:disabled{ opacity:.6; cursor:wait;}
+  .btn-ghost{ background:transparent; color:var(--text-2); border:1px solid var(--line-2); }
+  .btn-ghost:hover{ background:var(--surface); color:var(--text);}
+  .btn svg{ width:16px; height:16px;}
+
+  .error-banner{ margin:0 40px 24px; padding:14px 18px; background:rgba(255,85,56,.08); border:1px solid rgba(255,85,56,.3); border-radius:10px; color:var(--red); font-size:13px; display:none; align-items:center; gap:10px; }
+  .error-banner.show{ display:flex; animation:slide .3s ease;}
+  @keyframes slide{ from{transform:translateY(-8px); opacity:0;} to{transform:translateY(0); opacity:1;}}
+
+  .view{ display:none;}
+  .view.active{ display:block;}
+
+  .table-head{ display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:36px; gap:24px; flex-wrap:wrap; border-top:1px solid var(--line); border-bottom:1px solid var(--line); padding:48px 0 40px; }
+  .table-head h2{ font-family:'Bricolage Grotesque',sans-serif; font-weight:500; font-size:clamp(48px,7vw,88px); line-height:.95; letter-spacing:-.03em; }
+  .table-head h2 em{ font-style:italic; color:var(--accent); font-weight:600;}
+  .table-actions{ display:flex; gap:10px; align-items:center;}
+  .search{ background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:11px 16px 11px 38px; font-family:'Manrope',sans-serif; font-size:13px; width:280px; color:var(--text); background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236E6B62' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='11' cy='11' r='8'/><path d='m21 21-4.3-4.3'/></svg>"); background-repeat:no-repeat; background-position:14px center; }
+  .search:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 4px rgba(216,255,56,.08);}
+
+  .table-card{ background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden; box-shadow:var(--shadow); }
+  .table-scroll{ overflow-x:auto;}
+  table{ width:100%; border-collapse:collapse; min-width:1100px;}
+  th{ text-align:left; font-family:'JetBrains Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.14em; color:var(--muted); padding:18px 20px; border-bottom:1px solid var(--line); font-weight:500; background:var(--bg-2); position:sticky; top:0; }
+  td{ padding:18px 20px; border-bottom:1px solid var(--line); font-size:13.5px; color:var(--text-2); vertical-align:top; }
+  tr:last-child td{ border-bottom:0;}
+  tr.row{ transition:background .15s; cursor:pointer;}
+  tr.row:hover{ background:var(--surface-2);}
+
+  .cell-id{ font-family:'JetBrains Mono',monospace; color:var(--muted); font-size:11.5px;}
+  .cell-dealer{ font-weight:600; color:var(--text); font-size:14px;}
+  .cell-dealer-sub{ display:block; font-size:11.5px; color:var(--muted); margin-top:3px; font-weight:400;}
+  .pill{ display:inline-block; padding:4px 10px; border-radius:6px; font-size:11px; font-family:'JetBrains Mono',monospace; letter-spacing:.02em; font-weight:500; background:var(--accent-soft); color:var(--accent); border:1px solid rgba(216,255,56,.2); }
+  .pill.waiting{ background:rgba(255,165,0,.1); color:orange; border-color:rgba(255,165,0,.2); }
+  .pill.assigned{ background:rgba(0,255,128,.1); color:#00ff80; border-color:rgba(0,255,128,.2); }
+  .size-pills{ display:flex; flex-wrap:wrap; gap:4px;}
+  .size-pill{ font-family:'JetBrains Mono',monospace; font-size:10.5px; padding:3px 7px; background:var(--bg); border:1px solid var(--line); border-radius:4px; color:var(--text-2); }
+  .cell-date{ font-family:'JetBrains Mono',monospace; font-size:12px;}
+  .truncate{ max-width:240px; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+  
+  .assignee-select { background:var(--bg-2); border: 1px solid var(--line-2); color: var(--text); padding: 4px 8px; border-radius: 6px; font-size: 12px; cursor: pointer; outline: none; }
+  .assignee-select:focus { border-color: var(--accent); }
+
+  .expand-row td{ background:var(--bg-2); padding:0; border-bottom:1px solid var(--line);}
+  .expand-inner{ padding:28px 32px; display:grid; grid-template-columns:repeat(2,1fr); gap:20px 32px;}
+  .expand-label{ font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.16em; color:var(--accent); margin-bottom:8px; }
+  .expand-value{ font-size:14px; line-height:1.6; color:var(--text);}
+  .expand-actions{ grid-column:1 / -1; display:flex; gap:8px; margin-top:8px;}
+  .btn-sm{ padding:8px 14px; font-size:12px; border-radius:8px;}
+
+  .empty{ padding:96px 40px; text-align:center; }
+  .empty-icon{ width:72px; height:72px; border-radius:16px; background:var(--bg); border:1px solid var(--line); margin:0 auto 24px; display:grid; place-items:center; color:var(--muted); }
+  .empty h3{ font-family:'Bricolage Grotesque',sans-serif; font-size:32px; color:var(--text); margin-bottom:10px; font-weight:500; letter-spacing:-.02em;}
+  .empty p{ font-size:14px; color:var(--text-2);}
+
+  .toast{ position:fixed; bottom:32px; left:50%; transform:translateX(-50%) translateY(140%); background:var(--surface); border:1px solid var(--line-2); color:var(--text); padding:14px 22px; border-radius:12px; font-size:13.5px; box-shadow:0 24px 48px rgba(0,0,0,.5); z-index:100; transition:transform .35s cubic-bezier(.2,.8,.2,1); display:flex; align-items:center; gap:10px; max-width:90vw; }
+  .toast.show{ transform:translateX(-50%) translateY(0);}
+  .toast.success{ border-color:var(--accent); box-shadow:0 24px 48px rgba(0,0,0,.5), 0 0 0 1px var(--accent);}
+  .toast.error{ border-color:var(--red); box-shadow:0 24px 48px rgba(0,0,0,.5), 0 0 0 1px var(--red);}
+  .toast-icon{ width:18px; height:18px; flex-shrink:0;}
+  .toast.success .toast-icon{ color:var(--accent);}
+  .toast.error .toast-icon{ color:var(--red);}
+
+  .success-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.7); backdrop-filter:blur(8px); display:none; align-items:center; justify-content:center; z-index:200; padding:24px; opacity:0; transition:opacity .25s ease; }
+  .success-overlay.show{ display:flex; opacity:1;}
+  .success-card{ background:var(--surface); border:1px solid var(--line-2); border-radius:20px; padding:48px; max-width:480px; width:100%; text-align:center; box-shadow:0 40px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(216,255,56,.2); transform:translateY(20px) scale(.96); transition:all .35s cubic-bezier(.2,.8,.2,1); position:relative; overflow:hidden; }
+  .success-overlay.show .success-card{ transform:translateY(0) scale(1);}
+  .success-card::before{ content:""; position:absolute; top:-100px; left:50%; transform:translateX(-50%); width:300px; height:300px; background:radial-gradient(circle, rgba(216,255,56,.2), transparent 60%); pointer-events:none; }
+  .success-icon{ width:80px; height:80px; border-radius:50%; background:var(--accent); margin:0 auto 24px; display:grid; place-items:center; color:#000; box-shadow:0 0 40px rgba(216,255,56,.5); position:relative; }
+  .success-card h3{ font-family:'Bricolage Grotesque',sans-serif; font-size:36px; font-weight:600; letter-spacing:-.02em; margin-bottom:12px; position:relative; }
+  .success-card h3 em{ font-style:italic; color:var(--accent); font-weight:500;}
+  .success-card p{ font-size:14px; color:var(--text-2); line-height:1.6; margin-bottom:28px; position:relative;}
+  .success-meta{ font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:10px 14px; margin-bottom:28px; position:relative; text-transform:uppercase; letter-spacing:.14em; }
+  .success-meta strong{ color:var(--accent); font-weight:600;}
+  .success-actions{ display:flex; gap:10px; justify-content:center; position:relative;}
+
+  footer{ max-width:1320px; margin:64px auto 0; padding:32px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted); border-top:1px solid var(--line); text-transform:uppercase; letter-spacing:.12em; }
+  footer .dot{ width:4px; height:4px; background:var(--accent); border-radius:50%; display:inline-block; margin:0 10px; transform:translateY(-2px); box-shadow:0 0 8px var(--accent);}
+  
+  .admin-login { cursor: pointer; color: var(--muted); transition: color 0.2s; }
+  .admin-login:hover { color: var(--accent); }
+
+  @media(max-width:1080px){ .form-wrap{ grid-template-columns:1fr; gap:24px;} .form-aside{ position:static;} .stepper{ flex-direction:row; overflow-x:auto; padding-bottom:8px;} .step{ min-width:200px;} }
+  @media(max-width:760px){ .nav-inner{ padding:14px 20px; flex-wrap:wrap;} .nav-meta{ display:none;} .wrap{ padding:32px 20px 64px;} .hero{ padding:32px 0;} .hero-grid{ grid-template-columns:1fr;} .field-row{ grid-template-columns:1fr;} .section{ padding:28px 24px;} .submit-bar{ padding:20px 24px; flex-direction:column; align-items:stretch;} .search{ width:100%;} .stat-strip{ grid-template-columns:1fr; } .stat{ border-right:0; border-bottom:1px solid var(--line);} .stat:last-child{ border-bottom:0;} .expand-inner { grid-template-columns: 1fr; } }
+
+  .loaded > * { animation: rise .8s cubic-bezier(.2,.8,.2,1) backwards;}
+  .loaded > *:nth-child(1){ animation-delay:.05s;}
+  .loaded > *:nth-child(2){ animation-delay:.15s;}
+  .loaded > *:nth-child(3){ animation-delay:.25s;}
+  @keyframes rise{ from{ opacity:0; transform:translateY(24px);} to{ opacity:1; transform:translateY(0);} }
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="logo">
+      <div class="logo-mark">B</div>
+      <div class="logo-text">
+        <span class="logo-name">Brief</span>
+        <span class="logo-sub">v 3.0 / Дизайн-отдел</span>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-view="form">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Новый бриф
+      </button>
+      <button class="tab" data-view="table">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+        Заявки <span class="tab-count" id="tabCount">0</span>
+      </button>
+    </div>
+
+    <div class="nav-meta">
+      <span class="live" id="adminIndicator" style="display:none; background: #FF5538; box-shadow:0 0 8px #FF5538;"></span>
+      <span><span id="roleText">Online</span> · <span id="navTime">--:--</span></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section class="view active loaded" id="view-form">
+
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <div class="crumb">
+            <span class="crumb-tag">№ 001</span>
+            <span class="crumb-sep">/</span>
+            <span>Графический дизайн</span>
+            <span class="crumb-sep">/</span>
+            <span>Дилерский отдел</span>
+          </div>
+          <h1>
+            Бриф на<br>
+            <span class="accent">графический</span>
+            <span class="accent">дизайн</span>
+          </h1>
+        </div>
+        <div class="hero-side">
+          <p>Опиши задачу — собери макет. Чем подробнее заполнишь бриф, тем быстрее команда выдаст финальный визуал без бесконечных правок.</p>
+          <div class="stat-strip">
+            <div class="stat">
+              <div class="stat-num">3<span class="unit">дн.</span></div>
+              <div class="stat-lbl">срок</div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">12</div>
+              <div class="stat-lbl">полей</div>
+            </div>
+            <div class="stat">
+              <div class="stat-num">6<span class="unit">/день</span></div>
+              <div class="stat-lbl">лимит</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <form id="briefForm" class="form-wrap" novalidate>
+
+      <aside class="form-aside">
+        <div class="stepper">
+          <div class="step active" data-step="1">
+            <div class="step-num"><span class="num">01</span></div>
+            <div>
+              <div class="step-label">Контакты</div>
+              <div class="step-desc">Дилер, почта, телефон</div>
+            </div>
+          </div>
+          <div class="step" data-step="2">
+            <div class="step-num"><span class="num">02</span></div>
+            <div>
+              <div class="step-label">Формат</div>
+              <div class="step-desc">Тип материала и размер</div>
+            </div>
+          </div>
+          <div class="step" data-step="3">
+            <div class="step-num"><span class="num">03</span></div>
+            <div>
+              <div class="step-label">Текст</div>
+              <div class="step-desc">Заголовок, УТП, дисклеймер</div>
+            </div>
+          </div>
+          <div class="step" data-step="4">
+            <div class="step-num"><span class="num">04</span></div>
+            <div>
+              <div class="step-label">Визуал</div>
+              <div class="step-desc">Стиль и референсы</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="timer-card">
+          <div class="timer-label">Срок исполнения</div>
+          <div class="timer-value">3<span class="unit">рабочих дня</span></div>
+          <div class="timer-desc">с момента получения полностью заполненного брифа</div>
+        </div>
+      </aside>
+
+      <div class="form-panel">
+
+        <div class="section" data-section="1">
+          <div class="section-head">
+            <span class="section-marker">[ 01 / 04 ]</span>
+            <div class="section-titles">
+              <h3>Контактные <span class="ital">данные</span></h3>
+              <p>Кому и куда писать, когда макет будет готов</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="lbl">
+              <span>Название дилера<span class="req"> *</span></span>
+            </label>
+            <input class="input" type="text" name="dealer" data-required placeholder="AutoLux Almaty">
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label class="lbl">
+                <span>Почта менеджера<span class="req"> *</span></span>
+              </label>
+              <input class="input" type="email" name="email" data-required data-type="email" placeholder="manager@dealer.kz">
+            </div>
+            <div class="field">
+              <label class="lbl">
+                <span>Телефон<span class="req"> *</span></span>
+                <span class="hint">WhatsApp</span>
+              </label>
+              <input class="input" type="tel" name="phone" id="phoneInput" data-required placeholder="+7 (___) ___-__-__">
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="lbl">
+              <span>Дата подачи<span class="req"> *</span></span>
+              <span class="hint">Лимит: 6 заявок в день</span>
+            </label>
+            <input class="input" type="date" name="appDate" id="appDate" data-required>
+          </div>
+        </div>
+
+        <div class="section" data-section="2">
+          <div class="section-head">
+            <span class="section-marker">[ 02 / 04 ]</span>
+            <div class="section-titles">
+              <h3>Формат <span class="ital">материала</span></h3>
+              <p>Где будет жить макет — баннер, пост, сторис или Reels</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="lbl">
+              <span>Тип материала<span class="req"> *</span></span>
+            </label>
+            <div class="formats" id="formats">
+              <div class="fmt-card" data-value="Баннер">
+                <div class="fmt-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2" y="6" width="20" height="12" rx="1.5"/><line x1="2" y1="10" x2="22" y2="10"/></svg></div>
+                <div class="fmt-name">Баннер</div>
+                <div class="fmt-sub">наружка</div>
+              </div>
+              <div class="fmt-card" data-value="Пост">
+                <div class="fmt-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="18" height="18" rx="2"/></svg></div>
+                <div class="fmt-name">Пост</div>
+                <div class="fmt-sub">соцсети</div>
+              </div>
+              <div class="fmt-card" data-value="Stories">
+                <div class="fmt-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="6" y="2" width="12" height="20" rx="2"/></svg></div>
+                <div class="fmt-name">Stories</div>
+                <div class="fmt-sub">9:16</div>
+              </div>
+              <div class="fmt-card" data-value="Reels">
+                <div class="fmt-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><polygon points="5 3 19 12 5 21 5 3"/></svg></div>
+                <div class="fmt-name">Reels</div>
+                <div class="fmt-sub">видео</div>
+              </div>
+            </div>
+            <input type="hidden" name="format" id="formatInput">
+          </div>
+
+          <div class="field">
+            <label class="lbl">
+              <span>Размер / пропорции<span class="req"> *</span></span>
+              <span class="hint">можно несколько</span>
+            </label>
+            <div class="chips" id="sizeChips">
+              <label class="chip"><input type="checkbox" class="chip-input" name="size" value="1080x1080"><span>1080 × 1080</span></label>
+              <label class="chip"><input type="checkbox" class="chip-input" name="size" value="1080x1920"><span>1080 × 1920</span></label>
+              <label class="chip"><input type="checkbox" class="chip-input" name="size" value="1080x1350"><span>1080 × 1350</span></label>
+              <label class="chip"><input type="checkbox" class="chip-input" name="size" value="1200x628"><span>1200 × 628</span></label>
+            </div>
+            <input class="input" type="text" name="customSize" placeholder="Свой размер — например, 1920×1080" style="margin-top:10px;">
+          </div>
+
+          <div class="field">
+            <label class="lbl">
+              <span>Модель машины<span class="req"> *</span></span>
+            </label>
+            <input class="input" type="text" name="carModel" data-required placeholder="Hongqi H5, BYD Song Plus, Geely Coolray">
+          </div>
+        </div>
+
+        <div class="section" data-section="3">
+          <div class="section-head">
+            <span class="section-marker">[ 03 / 04 ]</span>
+            <div class="section-titles">
+              <h3>Текст <span class="ital">на макете</span></h3>
+              <p>Что именно прочитает зритель — слово в слово, без догадок</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="lbl">
+              <span>Заголовок (Headline)<span class="req"> *</span></span>
+              <span class="hint">главная фраза</span>
+            </label>
+            <input class="input" type="text" name="headline" data-required placeholder="Премиум-седан по цене кроссовера">
+          </div>
+
+          <div class="field">
+            <label class="lbl">
+              <span>Призыв к действию / УТП<span class="req"> *</span></span>
+              <span class="hint">что сделать клиенту</span>
+            </label>
+            <input class="input" type="text" name="cta" data-required placeholder="Закажите тест-драйв до 31 мая">
+          </div>
+
+          <div class="field">
+            <label class="lbl">
+              <span>Подзаголовок / основной текст</span>
+              <span class="hint">не обязательно</span>
+            </label>
+            <textarea class="textarea" name="subtext" placeholder="Скидка до 1 500 000 ₸&#10;Рассрочка 0-0-36&#10;КАСКО в подарок"></textarea>
+          </div>
+
+          <div class="field">
+            <label class="lbl">
+              <span>Юридический дисклеймер</span>
+              <span class="hint">текст со звёздочкой</span>
+            </label>
+            <textarea class="textarea" name="disclaimer" placeholder="*Не является публичной офертой. Условия акции — у менеджеров..."></textarea>
+          </div>
+        </div>
+
+        <div class="section" data-section="4">
+          <div class="section-head">
+            <span class="section-marker">[ 04 / 04 ]</span>
+            <div class="section-titles">
+              <h3>Визуал <span class="ital">и стиль</span></h3>
+              <p>Покажи примеры — Pinterest, Drive, Behance</p>
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="lbl">
+              <span>Референсы и пожелания по стилю<span class="req"> *</span></span>
+              <span class="hint">ссылки и описание</span>
+            </label>
+            <textarea class="textarea" name="visual" data-required placeholder="https://pinterest.com/...&#10;https://drive.google.com/...&#10;&#10;Минимализм, тёмный фон, золотая типографика" style="min-height:140px;"></textarea>
+          </div>
+        </div>
+
+        <div class="error-banner" id="errorBanner">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <span id="errorText">Заполните все обязательные поля</span>
+        </div>
+
+        <div class="submit-bar">
+          <div class="submit-note">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+            <span>Данные сохраняются автоматически и попадают в общую таблицу для дизайн-команды.</span>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="btn btn-ghost" id="resetBtn">Очистить</button>
+            <button type="button" class="btn btn-primary" id="submitBtn">
+              Отправить бриф
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </form>
+
+  </section>
+
+  <section class="view" id="view-table">
+
+    <div class="table-head">
+      <div>
+        <div class="crumb">
+          <span class="crumb-tag" id="totalCount">0</span>
+          <span>заявок в базе</span>
+        </div>
+        <h2>Все <em>заявки</em></h2>
+      </div>
+      <div class="table-actions">
+        <input type="text" class="search" id="search" placeholder="Поиск: дилер, модель, заголовок...">
+        <button class="btn btn-ghost btn-sm" id="exportBtn" style="display:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          CSV
+        </button>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-scroll">
+        <table id="briefsTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Дилер</th>
+              <th>Исполнитель</th>
+              <th>Формат</th>
+              <th>Размеры</th>
+              <th>Модель</th>
+              <th>Дата</th>
+            </tr>
+          </thead>
+          <tbody id="tbody"></tbody>
+        </table>
+      </div>
+      <div class="empty" id="empty">
+        <div class="empty-icon">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <h3>Загрузка заявок...</h3>
+        <p>Пожалуйста, подождите, мы получаем данные из таблицы.</p>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<footer>
+  <div>© 2026 Brief Studio<span class="dot"></span>Внутренний инструмент</div>
+  <div>
+    <span class="admin-login" onclick="toggleAdmin()" id="adminBtnText">Вход для админа</span>
+    <span class="dot"></span>Made with craft
+  </div>
+</footer>
+
+<div class="toast" id="toast">
+  <svg class="toast-icon" id="toastIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toastText">Готово</span>
+</div>
+
+<div class="success-overlay" id="successOverlay">
+  <div class="success-card">
+    <div class="success-icon">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h3>Бриф <em>принят</em></h3>
+    <p>Заявка сохранена в базе и доступна дизайн-команде.<br>Срок — 3 рабочих дня с этого момента.</p>
+    <div class="success-meta">ID заявки: <strong id="successId">—</strong></div>
+    <div class="success-actions">
+      <button class="btn btn-ghost" onclick="closeSuccess()">Закрыть</button>
+      <button class="btn btn-primary" onclick="closeSuccess(); switchView('table')">Все заявки →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // БАСҚАРУ АЙНЫМАЛЫЛАРЫ
+  let submissions = [];
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQBacAl1GOqlBhDqCO4VJn5ceY846wZxCft-6ZCn0wNbsbsJHyqk0XHREe2rezyFjk/exec';
+  const MAX_REQUESTS_PER_DAY = 6;
+  
+  // АДМИН ТЕКСЕРІСІ
+  const isAdmin = localStorage.getItem('isAdmin') === 'true';
+
+  if (isAdmin) {
+    document.getElementById('adminIndicator').style.display = 'inline-block';
+    document.getElementById('roleText').textContent = 'Admin Mode';
+    document.getElementById('roleText').style.color = '#FF5538';
+    document.getElementById('adminBtnText').textContent = 'Выйти (Админ)';
+    document.getElementById('exportBtn').style.display = 'inline-flex';
+  }
+
+  window.toggleAdmin = function() {
+    if (isAdmin) {
+      localStorage.removeItem('isAdmin');
+      location.reload();
+    } else {
+      const pass = prompt('Введите пароль администратора:');
+      if (pass === 'admin123') { // ҚҰПИЯ СӨЗ ОСЫ ЖЕРДЕ
+        localStorage.setItem('isAdmin', 'true');
+        location.reload();
+      } else if (pass !== null) {
+        alert('Неверный пароль!');
+      }
+    }
+  }
+
+  // ТЕЛЕФОН МАСКАСЫ
+  const phoneInput = document.getElementById('phoneInput');
+  phoneInput.addEventListener('input', function (e) {
+      let x = e.target.value.replace(/\D/g, '').match(/(\d{0,1})(\d{0,3})(\d{0,3})(\d{0,2})(\d{0,2})/);
+      if (!x[1]) { e.target.value = '+7'; return; }
+      if (x[1] !== '7' && x[1] !== '8') x[1] = '7'; 
+      e.target.value = !x[2] ? '+7' : '+7 (' + x[2] + (x[3] ? ') ' + x[3] : '') + (x[4] ? '-' + x[4] : '') + (x[5] ? '-' + x[5] : '');
+  });
+
+  // КҮНГЕ ЛИМИТ ТЕКСЕРУ (МАКСИМУМ 6)
+  const appDateInput = document.getElementById('appDate');
+  appDateInput.addEventListener('change', (e) => {
+    const selectedDate = e.target.value; // YYYY-MM-DD
+    if(!selectedDate) return;
+
+    // Осы таңдалған күні қанша заявка бар екенін санаймыз
+    let count = 0;
+    submissions.forEach(sub => {
+       if (sub.appDate && sub.appDate.startsWith(selectedDate)) {
+         count++;
+       }
+    });
+
+    if (count >= MAX_REQUESTS_PER_DAY) {
+      showToast(`На ${fmtDateShort(selectedDate)} уже ${MAX_REQUESTS_PER_DAY} заявок. Выберите другой день.`, 'error');
+      e.target.value = ''; // Босатып тастау
+    }
+  });
+
+  // АВТО-САҚТАУ
+  const form = document.getElementById('briefForm');
+  const saveDraft = () => {
+      const fd = new FormData(form);
+      const draft = Object.fromEntries(fd.entries());
+      draft.sizes = Array.from(document.querySelectorAll('.chip-input:checked')).map(c => c.value);
+      localStorage.setItem('briefDraftV3', JSON.stringify(draft));
+  };
+  form.addEventListener('input', saveDraft);
+
+  const loadDraft = () => {
+      const saved = localStorage.getItem('briefDraftV3');
+      if (saved) {
+          const draft = JSON.parse(saved);
+          Object.keys(draft).forEach(key => {
+              if (form.elements[key] && form.elements[key].type !== 'checkbox' && form.elements[key].type !== 'radio') {
+                  form.elements[key].value = draft[key];
+              }
+          });
+          if (draft.sizes) {
+              draft.sizes.forEach(val => {
+                  const cb = document.querySelector(`.chip-input[value="${val}"]`);
+                  if (cb) { cb.checked = true; cb.closest('.chip').classList.add('checked'); }
+              });
+          }
+          if (draft.format) {
+              const fmtCard = document.querySelector(`.fmt-card[data-value="${draft.format}"]`);
+              if(fmtCard) {
+                  document.querySelectorAll('.fmt-card').forEach(c => c.classList.remove('selected'));
+                  fmtCard.classList.add('selected');
+                  document.getElementById('formatInput').value = draft.format;
+              }
+          }
+      }
+  };
+  window.addEventListener('DOMContentLoaded', loadDraft);
+
+  // СЕРВЕРДЕН ОҚУ
+  async function loadSubmissions(){
+    try{
+      const response = await fetch(SCRIPT_URL);
+      const data = await response.json();
+      if(Array.isArray(data)){
+        submissions = data;
+      }
+    }catch(e){ 
+      console.error(e);
+      showToast('Не удалось загрузить заявки', 'error');
+    }
+  }
+
+  function switchView(name){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.view===name));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    const v = document.getElementById('view-'+name);
+    v.classList.add('active','loaded');
+    if(name==='table') renderTable();
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+  window.switchView = switchView;
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>switchView(t.dataset.view)));
+
+  document.querySelectorAll('.fmt-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      document.querySelectorAll('.fmt-card').forEach(c=>c.classList.remove('selected'));
+      card.classList.add('selected');
+      document.getElementById('formatInput').value = card.dataset.value;
+      document.getElementById('formats').style.outline = '';
+      saveDraft();
+    });
+  });
+
+  document.querySelectorAll('#sizeChips .chip').forEach(chip=>{
+    const input = chip.querySelector('.chip-input');
+    chip.addEventListener('click', (e)=>{
+      if(e.target.tagName !== 'INPUT'){
+        e.preventDefault();
+        input.checked = !input.checked;
+      }
+      chip.classList.toggle('checked', input.checked);
+      document.getElementById('sizeChips').style.outline = '';
+      saveDraft();
+    });
+  });
+
+  const stepObserver = new IntersectionObserver(entries=>{
+    entries.forEach(entry=>{
+      if(entry.isIntersecting && entry.intersectionRatio > 0.3){
+        const id = entry.target.dataset.section;
+        document.querySelectorAll('.step').forEach(s=>{
+          const sId = s.dataset.step;
+          s.classList.toggle('active', sId === id);
+          s.classList.toggle('done', parseInt(sId) < parseInt(id));
+        });
+      }
+    });
+  },{ threshold:[0.3, 0.6] });
+  document.querySelectorAll('.section[data-section]').forEach(s=>stepObserver.observe(s));
+
+  document.querySelectorAll('.step').forEach(s=>{
+    s.addEventListener('click', ()=>{
+      const target = document.querySelector(`.section[data-section="${s.dataset.step}"]`);
+      if(target) target.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+
+  function updateClock(){
+    const d = new Date();
+    document.getElementById('navTime').textContent = d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
+  }
+  updateClock(); setInterval(updateClock, 30000);
+
+  function validateForm(form){
+    const errors = [];
+    let firstInvalid = null;
+
+    form.querySelectorAll('.invalid').forEach(el=>el.classList.remove('invalid'));
+
+    form.querySelectorAll('[data-required]').forEach(el=>{
+      const val = (el.value || '').trim();
+      if(!val){
+        el.classList.add('invalid');
+        errors.push(el.name);
+        if(!firstInvalid) firstInvalid = el;
+      } else if(el.dataset.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val)){
+        el.classList.add('invalid');
+        errors.push(el.name);
+        if(!firstInvalid) firstInvalid = el;
+      }
+    });
+
+    const fmt = document.getElementById('formatInput').value;
+    const formatsEl = document.getElementById('formats');
+    if(!fmt){
+      formatsEl.style.outline = '1px solid var(--red)';
+      formatsEl.style.outlineOffset = '4px';
+      formatsEl.style.borderRadius = '12px';
+      errors.push('format');
+      if(!firstInvalid) firstInvalid = formatsEl;
+    } else {
+      formatsEl.style.outline = '';
+    }
+
+    const sizes = Array.from(document.querySelectorAll('input[name="size"]:checked')).map(c=>c.value);
+    const custom = (form.querySelector('input[name="customSize"]').value||'').trim();
+    const sizeChipsEl = document.getElementById('sizeChips');
+    if(sizes.length === 0 && !custom){
+      sizeChipsEl.style.outline = '1px solid var(--red)';
+      sizeChipsEl.style.outlineOffset = '4px';
+      sizeChipsEl.style.borderRadius = '8px';
+      errors.push('size');
+      if(!firstInvalid) firstInvalid = sizeChipsEl;
+    } else {
+      sizeChipsEl.style.outline = '';
+    }
+
+    return { ok: errors.length === 0, errors, firstInvalid, sizes: sizes.concat(custom ? [custom] : []) };
+  }
+
+  async function handleSubmit(){
+    const banner = document.getElementById('errorBanner');
+    const errorText = document.getElementById('errorText');
+
+    const result = validateForm(form);
+
+    if(!result.ok){
+      banner.classList.add('show');
+      errorText.textContent = `Заполните обязательные поля (${result.errors.length} осталось). Они выделены красным.`;
+      if(result.firstInvalid){
+        result.firstInvalid.scrollIntoView({behavior:'smooth', block:'center'});
+        if(result.firstInvalid.focus) setTimeout(()=>{ try{result.firstInvalid.focus({preventScroll:true});}catch(e){} }, 400);
+      }
+      showToast('Не все поля заполнены', 'error');
+      return;
+    }
+    banner.classList.remove('show');
+
+    const fd = new FormData(form);
+    fd.append('action', 'submit');
+    fd.append('size', result.sizes.join(', '));
+
+    const btn = document.getElementById('submitBtn');
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-dasharray="40 20"/></svg> Отправка...';
+
+    try {
+        const response = await fetch(SCRIPT_URL, { method: 'POST', body: fd });
+        const resData = await response.json();
+
+        const sub = {
+            id: resData.id,
+            submittedAt: new Date().toISOString(),
+            dealer: fd.get('dealer'),
+            email: fd.get('email'),
+            phone: fd.get('phone'),
+            appDate: fd.get('appDate'),
+            format: document.getElementById('formatInput').value,
+            sizes: result.sizes,
+            carModel: fd.get('carModel'),
+            headline: fd.get('headline'),
+            cta: fd.get('cta'),
+            subtext: fd.get('subtext')||'',
+            disclaimer: fd.get('disclaimer')||'',
+            visual: fd.get('visual'),
+            assignee: ''
+        };
+        submissions.unshift(sub);
+        updateCount();
+        renderTable();
+
+        form.reset();
+        localStorage.removeItem('briefDraftV3');
+        document.querySelectorAll('.fmt-card').forEach(c=>c.classList.remove('selected'));
+        document.querySelectorAll('.chip').forEach(c=>c.classList.remove('checked'));
+        document.querySelectorAll('.chip-input').forEach(c=>c.checked = false);
+        document.getElementById('formatInput').value = '';
+
+        document.getElementById('successId').textContent = sub.id;
+        document.getElementById('successOverlay').classList.add('show');
+        window.scrollTo({top:0, behavior:'smooth'});
+
+    } catch(e) {
+        showToast('Произошла ошибка при отправке', 'error');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = orig;
+    }
+  }
+
+  document.getElementById('submitBtn').addEventListener('click', handleSubmit);
+  form.addEventListener('submit', (e)=>{ e.preventDefault(); handleSubmit(); });
+
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    if(!confirm('Очистить все заполненные поля?')) return;
+    form.reset();
+    localStorage.removeItem('briefDraftV3');
+    document.querySelectorAll('.fmt-card').forEach(c=>c.classList.remove('selected'));
+    document.querySelectorAll('.chip').forEach(c=>c.classList.remove('checked'));
+    document.querySelectorAll('.chip-input').forEach(c=>c.checked = false);
+    document.getElementById('formatInput').value = '';
+    document.querySelectorAll('.invalid').forEach(el=>el.classList.remove('invalid'));
+    document.getElementById('errorBanner').classList.remove('show');
+    document.getElementById('formats').style.outline = '';
+    document.getElementById('sizeChips').style.outline = '';
+    showToast('Форма очищена');
+  });
+
+  function closeSuccess(){ document.getElementById('successOverlay').classList.remove('show'); }
+  window.closeSuccess = closeSuccess;
+  document.getElementById('successOverlay').addEventListener('click', (e)=>{
+    if(e.target.id==='successOverlay') closeSuccess();
+  });
+
+  function showToast(text, type='success'){
+    const t = document.getElementById('toast');
+    const icon = document.getElementById('toastIcon');
+    document.getElementById('toastText').textContent = text;
+    t.className = 'toast ' + type;
+    if(type === 'error'){
+      icon.innerHTML = '<circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>';
+    } else {
+      icon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
+    }
+    requestAnimationFrame(()=>t.classList.add('show'));
+    setTimeout(()=>t.classList.remove('show'), 2800);
+  }
+
+  function fmtDate(iso){
+    if(!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleDateString('ru-RU',{day:'2-digit',month:'short',year:'numeric'});
+  }
+  function fmtDateShort(iso){
+    if(!iso) return '—';
+    const d = new Date(iso);
+    return d.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'2-digit'});
+  }
+
+  function getDeadline(iso, workDays){
+    if(!iso) return '—';
+    let d = new Date(iso);
+    let added = 0;
+    while (added < workDays) {
+      d.setDate(d.getDate() + 1);
+      // Сенбі (6) мен Жексенбіні (0) өткізіп жібереміз
+      if (d.getDay() !== 0 && d.getDay() !== 6) {
+        added++;
+      }
+    }
+    return d.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'2-digit'});
+  }
+
+  function escapeHtml(s){
+    if(s==null) return '';
+    return String(s).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[m]);
+  }
+  function linkify(text){
+    if(!text) return '';
+    return escapeHtml(text).replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:var(--accent); text-decoration:underline; text-decoration-color:rgba(216,255,56,.4); text-underline-offset:3px;">$1</a>');
+  }
+  function plural(n,one,few,many){
+    n = Math.abs(n) % 100; const n1 = n % 10;
+    if(n>10 && n<20) return many;
+    if(n1>1 && n1<5) return few;
+    if(n1===1) return one;
+    return many;
+  }
+
+  // АДМИН МӘЛІМЕТТІ ӨЗГЕРТКЕНДЕ (МАМАН ТАҒАЙЫНДАУ)
+  window.assignSpecialist = async function(id, assigneeName) {
+    showToast('Назначение...', 'success');
+    const fd = new FormData();
+    fd.append('action', 'assign');
+    fd.append('id', id);
+    fd.append('assignee', assigneeName);
+    
+    try {
+        await fetch(SCRIPT_URL, { method: 'POST', body: fd });
+        // Локалды жаңарту
+        const sub = submissions.find(s => s.id === id);
+        if (sub) sub.assignee = assigneeName;
+        showToast('Исполнитель сохранен!');
+    } catch(e) {
+        showToast('Ошибка сохранения', 'error');
+    }
+  }
+
+  function renderTable(filterText=''){
+    const tbody = document.getElementById('tbody');
+    const empty = document.getElementById('empty');
+    const table = document.getElementById('briefsTable');
+    const f = filterText.toLowerCase().trim();
+    const rows = submissions.filter(s=>{
+      if(!f) return true;
+      return [s.dealer,s.email,s.carModel,s.headline,s.format,s.cta,s.assignee].join(' ').toLowerCase().includes(f);
+    });
+
+    document.getElementById('totalCount').textContent = submissions.length;
+
+    if(rows.length===0){
+      table.style.display='none'; empty.style.display='block';
+      empty.querySelector('h3').textContent = submissions.length===0 ? 'Пока нет заявок' : 'Ничего не найдено';
+      empty.querySelector('p').textContent = submissions.length===0 ? 'Заполни форму во вкладке слева — заявка автоматически появится здесь.' : 'Попробуй другой запрос.';
+      return;
+    }
+    table.style.display='table'; empty.style.display='none';
+
+    tbody.innerHTML = rows.map(s=>`
+      <tr class="row" data-id="${s.id}">
+        <td><span class="cell-id">${escapeHtml(s.id)}</span></td>
+        <td>
+          <span class="cell-dealer">${escapeHtml(s.dealer)}</span>
+          <span class="cell-dealer-sub">${escapeHtml(s.email)}</span>
+        </td>
+        <td onclick="event.stopPropagation()">
+            ${isAdmin ? `
+              <select class="assignee-select" onchange="assignSpecialist('${s.id}', this.value)">
+                 <option value="" ${!s.assignee ? 'selected' : ''}>Не назначен</option>
+                 <option value="Ханбүркіт" ${s.assignee === 'Ханбүркіт' ? 'selected' : ''}>Ханбүркіт</option>
+                 <option value="Алишер" ${s.assignee === 'Алишер' ? 'selected' : ''}>Алишер</option>
+              </select>
+            ` : `
+              <span class="pill ${s.assignee ? 'assigned' : 'waiting'}">${s.assignee ? escapeHtml(s.assignee) : 'В ожидании'}</span>
+            `}
+        </td>
+        <td><span class="pill" style="background:var(--accent-soft); color:var(--accent); border-color:rgba(216,255,56,.2);">${escapeHtml(s.format||'—')}</span></td>
+        <td><div class="size-pills">${(s.sizes||[]).map(sz=>`<span class="size-pill">${escapeHtml(sz)}</span>`).join('')}</div></td>
+        <td><strong style="color:var(--text)">${escapeHtml(s.carModel)}</strong></td>
+        <td>
+  <span class="cell-date" style="color: var(--text);">${fmtDateShort(s.appDate)}</span>
+  <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--red); margin-top:3px;">
+    до ${getDeadline(s.appDate, 3)}
+  </span>
+</td>
+      </tr>
+      <tr class="expand-row" data-expand="${s.id}" style="display:none;">
+        <td colspan="7">
+          <div class="expand-inner">
+            <div><div class="expand-label">Заголовок</div><div class="expand-value">${escapeHtml(s.headline)||'—'}</div></div>
+            <div><div class="expand-label">Призыв / УТП</div><div class="expand-value">${escapeHtml(s.cta)||'—'}</div></div>
+            <div><div class="expand-label">Подзаголовок</div><div class="expand-value">${escapeHtml(s.subtext)||'—'}</div></div>
+            <div><div class="expand-label">Дисклеймер</div><div class="expand-value">${escapeHtml(s.disclaimer)||'—'}</div></div>
+            <div style="grid-column:1 / -1;"><div class="expand-label">Визуал / референсы</div><div class="expand-value" style="white-space:pre-wrap; word-break:break-word;">${linkify(s.visual)||'—'}</div></div>
+            <div class="expand-actions">
+              <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); copyToClipboard('${s.id}')">Скопировать</button>
+            </div>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    tbody.querySelectorAll('tr.row').forEach(r=>{
+      r.addEventListener('click', ()=>{
+        const id = r.dataset.id;
+        const ex = tbody.querySelector(`tr[data-expand="${id}"]`);
+        if(!ex) return;
+        const isOpen = ex.style.display !== 'none';
+        tbody.querySelectorAll('tr.expand-row').forEach(e=>e.style.display='none');
+        ex.style.display = isOpen ? 'none' : 'table-row';
+      });
+    });
+  }
+
+  function updateCount(){
+    document.getElementById('tabCount').textContent = submissions.length;
+    document.getElementById('totalCount').textContent = submissions.length;
+  }
+
+  window.copyToClipboard = function(id){
+    const s = submissions.find(x=>x.id===id);
+    if(!s) return;
+    const text = `Бриф ${s.id}
+Дилер: ${s.dealer}
+Email: ${s.email}
+Телефон: ${s.phone}
+Дата заявки: ${s.appDate}
+Формат: ${s.format}
+Размеры: ${(s.sizes||[]).join(', ')}
+Модель: ${s.carModel}
+Заголовок: ${s.headline}
+УТП/CTA: ${s.cta}
+Подзаголовок: ${s.subtext}
+Дисклеймер: ${s.disclaimer}
+Визуал: ${s.visual}`;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(()=>showToast('Скопировано'));
+    } else {
+      showToast('Копирование недоступно','error');
+    }
+  }
+
+  document.getElementById('search').addEventListener('input', e=>renderTable(e.target.value));
+
+  document.getElementById('exportBtn').addEventListener('click', ()=>{
+    if(submissions.length===0){ showToast('Нет данных для экспорта','error'); return;}
+    const headers = ['ID','Submitted','Dealer','Email','Phone','AppDate','Format','Sizes','CarModel','Headline','CTA','Subtext','Disclaimer','Visual', 'Assignee'];
+    const esc = v => `"${String(v||'').replace(/"/g,'""').replace(/\n/g,' ')}"`;
+    const rows = submissions.map(s=>[s.id,s.submittedAt,s.dealer,s.email,s.phone,s.appDate,s.format,(s.sizes||[]).join('; '),s.carModel,s.headline,s.cta,s.subtext,s.disclaimer,s.visual, s.assignee].map(esc).join(','));
+    const csv = '\uFEFF' + headers.join(',') + '\n' + rows.join('\n');
+    const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `briefs-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click(); URL.revokeObjectURL(url);
+    showToast(`Экспортировано ${submissions.length} ${plural(submissions.length,'заявка','заявки','заявок')}`);
+  });
+
+  (async ()=>{
+    await loadSubmissions();
+    updateCount();
+    renderTable();
+  })();
+
+</script>
+</body>
+</html>
