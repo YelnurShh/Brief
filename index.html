@@ -248,7 +248,44 @@
   .admin-login:hover { color: var(--accent); }
 
   @media(max-width:1080px){ .form-wrap{ grid-template-columns:1fr; gap:24px;} .form-aside{ position:static;} .stepper{ flex-direction:row; overflow-x:auto; padding-bottom:8px;} .step{ min-width:200px;} }
-  @media(max-width:760px){ .nav-inner{ padding:14px 20px; flex-wrap:wrap;} .nav-meta{ display:none;} .wrap{ padding:32px 20px 64px;} .hero{ padding:32px 0;} .hero-grid{ grid-template-columns:1fr;} .field-row{ grid-template-columns:1fr;} .section{ padding:28px 24px;} .submit-bar{ padding:20px 24px; flex-direction:column; align-items:stretch;} .search{ width:100%;} .stat-strip{ grid-template-columns:1fr; } .stat{ border-right:0; border-bottom:1px solid var(--line);} .stat:last-child{ border-bottom:0;} .expand-inner { grid-template-columns: 1fr; } }
+  @media(max-width:760px){
+    /* Жалпы шегіністер (Отступы) */
+    .nav-inner{ padding:14px 20px; flex-wrap:nowrap;}
+    .nav-meta{ display:none;}
+    .wrap{ padding:24px 16px 64px;}
+    .hero{ padding:24px 0;}
+    .hero-grid{ grid-template-columns:1fr; gap: 32px;}
+    .field-row{ grid-template-columns:1fr; gap: 20px;}
+    .section{ padding:24px 20px;}
+    
+    /* Текст өлшемдерін телефонға бейімдеу */
+    h1 { font-size: 44px; line-height: 1; }
+    .table-head h2 { font-size: 38px; }
+
+    /* Батырмалар (Кнопкалар) телефонда толық енді алуы керек */
+    .submit-bar{ padding:20px; flex-direction:column; align-items:stretch; gap: 16px;}
+    .btn-row{ flex-direction: column-reverse; width: 100%; gap: 10px; }
+    .btn-row .btn { width: 100%; justify-content: center; }
+
+    /* Таблица және іздеу бөлімі */
+    .table-head { flex-direction: column; align-items: flex-start; gap: 16px; padding: 32px 0 24px;}
+    .table-actions { flex-direction: column; width: 100%; align-items: stretch; }
+    .search{ width:100%;}
+    
+    /* Статистика және Ашылмалы (Expand) меню */
+    .stat-strip{ grid-template-columns:1fr; }
+    .stat{ border-right:0; border-bottom:1px solid var(--line);}
+    .stat:last-child{ border-bottom:0;}
+    .expand-inner { grid-template-columns: 1fr; gap: 16px; padding: 20px; }
+    
+    /* Қадамдарды (Stepper) свайппен жылжытатын ету */
+    .stepper{ flex-direction:row; overflow-x:auto; padding-bottom:12px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+    .stepper::-webkit-scrollbar { display: none; }
+    .step{ min-width:80vw; scroll-snap-align: center; }
+    
+    /* Хабарламалар (Toast) телефонда ортада тұруы үшін */
+    .toast { width: calc(100% - 32px); max-width: none; bottom: 16px; }
+  }
 
   .loaded > * { animation: rise .8s cubic-bezier(.2,.8,.2,1) backwards;}
   .loaded > *:nth-child(1){ animation-delay:.05s;}
