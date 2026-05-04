@@ -986,7 +986,7 @@
 <script>
   // БАСҚАРУ АЙНЫМАЛЫЛАРЫ
   let submissions = [];
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyYs6OJLrH53yXxrs0L5T_m18snqD0RGeIWS1Jq3lVc0pouSdygswb7lKYoRtSr1aeT/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzQT9qZch4-hi5CZUWiUVWreRW-CTIQ9uciZSQWBA43Lq7gtPIGzSkgQ_XrSNQFfsBh/exec';
   const MAX_REQUESTS_PER_DAY = 6;
 
   // АДМИН ТЕКСЕРІСІ
@@ -1230,44 +1230,51 @@
     btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite;"><circle cx="12" cy="12" r="10" stroke-dasharray="40 20"/></svg> Отправка...';
 
     try {
-        const response = await fetch(SCRIPT_URL, { method: 'POST', body: fd });
-        const resData = await response.json();
+  // ID-ді клиент жағында жасаймыз (no-cors response оқылмайды)
+  const id = 'BRF-' + Date.now().toString(36).toUpperCase().slice(-6);
 
-        const sub = {
-            id: resData.id,
-            submittedAt: new Date().toISOString(),
-            dealer: fd.get('dealer'),
-            email: fd.get('email'),
-            phone: fd.get('phone'),
-            appDate: fd.get('appDate'),
-            format: document.getElementById('formatInput').value,
-            sizes: result.sizes,
-            carModel: fd.get('carModel'),
-            headline: fd.get('headline'),
-            cta: fd.get('cta'),
-            subtext: fd.get('subtext')||'',
-            disclaimer: fd.get('disclaimer')||'',
-            visual: fd.get('visual'),
-            assignee: ''
-        };
-        submissions.unshift(sub);
-        updateCount();
-        renderTable();
+  await fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: fd,
+    mode: 'no-cors'  // ← CORS қатесін болдырмайды
+  });
 
-        form.reset();
-        localStorage.removeItem('briefDraftV3');
-        document.querySelectorAll('.fmt-card').forEach(c=>c.classList.remove('selected'));
-        document.querySelectorAll('.chip').forEach(c=>c.classList.remove('checked'));
-        document.querySelectorAll('.chip-input').forEach(c=>c.checked = false);
-        document.getElementById('formatInput').value = '';
+  const sub = {
+    id: id,
+    submittedAt: new Date().toISOString(),
+    dealer: fd.get('dealer'),
+    email: fd.get('email'),
+    phone: fd.get('phone'),
+    appDate: fd.get('appDate'),
+    format: document.getElementById('formatInput').value,
+    sizes: result.sizes,
+    carModel: fd.get('carModel'),
+    headline: fd.get('headline'),
+    cta: fd.get('cta'),
+    subtext: fd.get('subtext') || '',
+    disclaimer: fd.get('disclaimer') || '',
+    visual: fd.get('visual'),
+    assignee: ''
+  };
 
-        document.getElementById('successId').textContent = sub.id;
-        document.getElementById('successOverlay').classList.add('show');
-        window.scrollTo({top:0, behavior:'smooth'});
+  submissions.unshift(sub);
+  updateCount();
+  renderTable();
 
-    } catch(e) {
-        showToast('Произошла ошибка при отправке', 'error');
-    } finally {
+  form.reset();
+  localStorage.removeItem('briefDraftV3');
+  document.querySelectorAll('.fmt-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('checked'));
+  document.querySelectorAll('.chip-input').forEach(c => c.checked = false);
+  document.getElementById('formatInput').value = '';
+
+  document.getElementById('successId').textContent = id;
+  document.getElementById('successOverlay').classList.add('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+} catch(e) {
+  showToast('Произошла ошибка при отправке', 'error');
+} finally {
         btn.disabled = false;
         btn.innerHTML = orig;
     }
@@ -1353,21 +1360,27 @@
 
   // АДМИН МАМАН ТАҒАЙЫНДАУ
   window.assignSpecialist = async function(id, assigneeName) {
-    showToast('Назначение...', 'success');
-    const fd = new FormData();
-    fd.append('action', 'assign');
-    fd.append('id', id);
-    fd.append('assignee', assigneeName);
+  showToast('Назначение...', 'success');
+  const fd = new FormData();
+  fd.append('action', 'assign');
+  fd.append('id', id);
+  fd.append('assignee', assigneeName);
 
-    try {
-        await fetch(SCRIPT_URL, { method: 'POST', body: fd });
-        const sub = submissions.find(s => s.id === id);
-        if (sub) sub.assignee = assigneeName;
-        showToast('Исполнитель сохранен!');
-    } catch(e) {
-        showToast('Ошибка сохранения', 'error');
-    }
+  try {
+    // mode: 'no-cors' — CORS қатесін болдырмайды
+    await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: fd,
+      mode: 'no-cors'
+    });
+    // Response оқылмайды (no-cors), бірақ Sheets-ке жазылады
+    const sub = submissions.find(s => s.id === id);
+    if (sub) sub.assignee = assigneeName;
+    showToast('Исполнитель сохранен!');
+  } catch(e) {
+    showToast('Ошибка сохранения', 'error');
   }
+}
 
   function renderTable(filterText=''){
     const tbody = document.getElementById('tbody');
