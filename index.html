@@ -264,6 +264,37 @@
   @keyframes rise{ from{ opacity:0; transform:translateY(24px);} to{ opacity:1; transform:translateY(0);}}
   @keyframes spin{ to{transform:rotate(360deg);}}
 
+
+  /* MATERIALS PANEL */
+  .hero-grid{ display:grid; grid-template-columns:1fr 400px; gap:48px; align-items:start;}
+  .materials-panel{ background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:var(--shadow);}
+  .materials-panel-head{ padding:18px 20px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:12px;}
+  .materials-panel-title{ font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.18em; color:var(--accent);}
+  .btn-create{ border:0; cursor:pointer; padding:7px 16px; border-radius:7px; font-family:'Manrope',sans-serif; font-size:12px; font-weight:600; background:var(--accent); color:#000; display:inline-flex; align-items:center; gap:6px; transition:all .2s;}
+  .btn-create:hover{ transform:translateY(-1px);}
+  .mat-cols-header{ display:grid; grid-template-columns:1fr 1fr auto; border-bottom:1px solid var(--line);}
+  .mat-col-label{ font-family:'JetBrains Mono',monospace; font-size:9.5px; text-transform:uppercase; letter-spacing:.16em; color:var(--muted); padding:10px 16px;}
+  .mat-list{ max-height:320px; overflow-y:auto; scrollbar-width:thin; scrollbar-color:var(--line) transparent;}
+  .mat-empty{ padding:32px 20px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);}
+  .mat-row{ display:grid; grid-template-columns:1fr 1fr auto; align-items:center; border-bottom:1px solid var(--line); transition:background .15s;}
+  .mat-row:last-child{ border-bottom:0;}
+  .mat-row:hover{ background:var(--surface-2);}
+  .mat-name{ padding:12px 16px; font-size:13px; font-weight:500; color:var(--text); word-break:break-word;}
+  .mat-link-cell{ padding:12px 16px;}
+  .mat-link{ display:inline-flex; align-items:center; gap:6px; color:var(--accent); font-size:12px; font-family:'JetBrains Mono',monospace; text-decoration:none; transition:opacity .15s;}
+  .mat-link:hover{ opacity:.75;}
+  .mat-link svg{ width:12px; height:12px; flex-shrink:0;}
+  .mat-actions{ padding:8px 12px; display:flex; gap:4px;}
+  .mat-del{ border:0; background:transparent; cursor:pointer; width:28px; height:28px; border-radius:5px; display:grid; place-items:center; color:var(--muted); transition:all .15s;}
+  .mat-del:hover{ background:rgba(255,85,56,.12); color:var(--red);}
+  .mat-edit-row{ display:grid; grid-template-columns:1fr 1fr auto; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid var(--line); background:var(--surface-2);}
+  .mat-input{ width:100%; background:var(--bg); border:1px solid var(--line-2); border-radius:6px; padding:8px 10px; font-family:'Manrope',sans-serif; font-size:13px; color:var(--text); transition:all .2s;}
+  .mat-input:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(216,255,56,.08);}
+  .mat-input::placeholder{ color:var(--muted);}
+  .btn-save-mat{ border:0; cursor:pointer; padding:7px 12px; border-radius:6px; font-family:'Manrope',sans-serif; font-size:12px; font-weight:600; background:var(--accent); color:#000; white-space:nowrap; transition:all .15s;}
+  .btn-cancel-mat{ border:1px solid var(--line-2); cursor:pointer; padding:7px 10px; border-radius:6px; font-family:'Manrope',sans-serif; font-size:12px; background:transparent; color:var(--muted); white-space:nowrap; transition:all .15s;}
+  .btn-cancel-mat:hover{ color:var(--text); background:var(--surface);}
+
   /* ═══════════════════════════════════════════════════════════
      RESPONSIVE
      ═══════════════════════════════════════════════════════════ */
@@ -575,23 +606,23 @@
             <span class="accent">дизайн</span>
           </h1>
         </div>
-        <div class="hero-side">
-          <p>Опиши задачу — собери макет. Чем подробнее заполнишь бриф, тем быстрее команда выдаст финальный визуал без бесконечных правок.</p>
-          <div class="stat-strip">
-            <div class="stat">
-              <div class="stat-num">3<span class="unit">дн.</span></div>
-              <div class="stat-lbl">срок</div>
-            </div>
-            <div class="stat">
-              <div class="stat-num">12</div>
-              <div class="stat-lbl">полей</div>
-            </div>
-            <div class="stat">
-              <div class="stat-num">6<span class="unit">/день</span></div>
-              <div class="stat-lbl">лимит</div>
-            </div>
-          </div>
-        </div>
+        <div class="materials-panel">
+  <div class="materials-panel-head">
+    <span class="materials-panel-title">Ссылки на материалы</span>
+    <button class="btn-create" id="btnCreate" style="display:none;" onclick="addMaterialRow()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Создать
+    </button>
+  </div>
+  <div class="mat-cols-header">
+    <span class="mat-col-label">Наименование</span>
+    <span class="mat-col-label">Ссылка</span>
+    <span style="width:44px;"></span>
+  </div>
+  <div class="mat-list" id="matList">
+    <div class="mat-empty" id="matEmpty">Ссылки не добавлены</div>
+  </div>
+</div>
       </div>
     </section>
 
@@ -1419,6 +1450,77 @@ Email: ${s.email}
     renderTable();
   })();
 
+
+  // ═══ MATERIALS ═══
+const MAT_KEY = 'briefMaterials_v1';
+let materials = JSON.parse(localStorage.getItem(MAT_KEY) || '[]');
+
+if(isAdmin) document.getElementById('btnCreate').style.display = 'inline-flex';
+
+function saveMaterials(){ localStorage.setItem(MAT_KEY, JSON.stringify(materials)); }
+
+function renderMaterials(){
+  const list = document.getElementById('matList');
+  const empty = document.getElementById('matEmpty');
+  list.querySelectorAll('.mat-row, .mat-edit-row').forEach(r => r.remove());
+  if(materials.length === 0){ empty.style.display = 'block'; return; }
+  empty.style.display = 'none';
+  materials.forEach((m, i) => {
+    const row = document.createElement('div');
+    row.className = 'mat-row';
+    row.innerHTML = `
+      <div class="mat-name">${escapeHtml(m.name)}</div>
+      <div class="mat-link-cell">
+        <a class="mat-link" href="${escapeHtml(m.url)}" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Открыть
+        </a>
+      </div>
+      <div class="mat-actions">
+        ${isAdmin ? `<button class="mat-del" onclick="deleteMaterial(${i})" title="Удалить">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+        </button>` : '<div style="width:44px;"></div>'}
+      </div>`;
+    list.appendChild(row);
+  });
+}
+
+window.addMaterialRow = function(){
+  const list = document.getElementById('matList');
+  list.querySelectorAll('.mat-edit-row').forEach(r => r.remove());
+  const row = document.createElement('div');
+  row.className = 'mat-edit-row';
+  row.innerHTML = `
+    <input class="mat-input" id="newMatName" type="text" placeholder="Наименование" autocomplete="off">
+    <input class="mat-input" id="newMatUrl" type="url" placeholder="https://..." autocomplete="off">
+    <div style="display:flex;gap:6px;flex-shrink:0;">
+      <button class="btn-save-mat" onclick="saveMaterialRow()">Сохранить</button>
+      <button class="btn-cancel-mat" onclick="renderMaterials()">Отмена</button>
+    </div>`;
+  list.appendChild(row);
+  document.getElementById('matEmpty').style.display = 'none';
+  document.getElementById('newMatName').focus();
+};
+
+window.saveMaterialRow = function(){
+  const name = (document.getElementById('newMatName').value || '').trim();
+  const url  = (document.getElementById('newMatUrl').value  || '').trim();
+  if(!name || !url){ showToast('Заполните оба поля', 'error'); return; }
+  materials.push({ name, url, createdAt: new Date().toISOString() });
+  saveMaterials();
+  renderMaterials();
+  showToast('Ссылка добавлена');
+};
+
+window.deleteMaterial = function(i){
+  if(!confirm('Удалить эту ссылку?')) return;
+  materials.splice(i, 1);
+  saveMaterials();
+  renderMaterials();
+  showToast('Удалено');
+};
+
+renderMaterials();
 </script>
 </body>
 </html>
