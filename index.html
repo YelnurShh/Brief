@@ -19,7 +19,7 @@
     --text:#EFEDE7;
     --text-2:#B8B5AB;
     --muted:#6E6B62;
-    --accent:#D8FF38;
+    --accent:#FFD579;
     --accent-soft:rgba(216,255,56,.08);
     --red:#FF5538;
     --shadow: 0 1px 0 rgba(255,255,255,.03) inset, 0 24px 48px -16px rgba(0,0,0,.6);
@@ -532,7 +532,9 @@
 <header class="nav">
   <div class="nav-inner">
     <div class="logo">
-      <div class="logo-mark">B</div>
+      <div class="logo">
+  <img src="3.png" alt="Brief" style="height: 40px; width: auto;">
+</div>
       <div class="logo-text">
         <span class="logo-name">Brief</span>
         <span class="logo-sub">v 3.0 / Дизайн-отдел</span>
@@ -737,7 +739,7 @@
             <label class="lbl">
               <span>Модель машины<span class="req"> *</span></span>
             </label>
-            <input class="input" type="text" name="carModel" data-required placeholder="Hongqi H5, BYD Song Plus, Geely Coolray">
+            <input class="input" type="text" name="carModel" data-required placeholder="Uni v , CS55PLUS , CS55MAX , CS75PLUS">
           </div>
         </div>
 
@@ -905,14 +907,14 @@
 <script>
   // БАСҚАРУ АЙНЫМАЛЫЛАРЫ
   let submissions = [];
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxiXzvYXLpSjWXv3Evgt5vEVWsZ-QLiPknE8dNL0wuYUFB3Mm_bvWGnp468RyPXMTGc/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyYs6OJLrH53yXxrs0L5T_m18snqD0RGeIWS1Jq3lVc0pouSdygswb7lKYoRtSr1aeT/exec';
   const MAX_REQUESTS_PER_DAY = 6;
 
   // АДМИН ТЕКСЕРІСІ
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
 
   if (isAdmin) {
-    document.getElementById('adminIndicator').style.display = 'inline-block';
+    document.getElementById('adminIndicator').style.display = 'inline-block'  ;
     document.getElementById('roleText').textContent = 'Admin Mode';
     document.getElementById('roleText').style.color = '#FF5538';
     document.getElementById('adminBtnText').textContent = 'Выйти (Админ)';
@@ -1316,16 +1318,23 @@
           <span class="cell-dealer-sub">${escapeHtml(s.email)}</span>
         </td>
         <td onclick="event.stopPropagation()">
-            ${isAdmin ? `
-              <select class="assignee-select" onchange="assignSpecialist('${s.id}', this.value)">
-                 <option value="" ${!s.assignee ? 'selected' : ''}>Не назначен</option>
-                 <option value="Ханбүркіт" ${s.assignee === 'Ханбүркіт' ? 'selected' : ''}>Ханбүркіт</option>
-                 <option value="Алишер" ${s.assignee === 'Алишер' ? 'selected' : ''}>Алишер</option>
-              </select>
-            ` : `
-              <span class="pill ${s.assignee ? 'assigned' : 'waiting'}">${s.assignee ? escapeHtml(s.assignee) : 'В ожидании'}</span>
-            `}
-        </td>
+    ${isAdmin ? `
+        <select class="assignee-select" onchange="assignSpecialist('${s.id}', this.value)">
+            <option value="" ${!s.assignee ? 'selected' : ''}>Не назначен</option>
+            <option value="Ханбүркіт" ${s.assignee === 'Ханбүркіт' ? 'selected' : ''}>Ханбүркіт</option>
+            <option value="Алишер" ${s.assignee === 'Алишер' ? 'selected' : ''}>Алишер</option>
+            <!-- Жаңа статус: Выполнено -->
+            <option value="Выполнено" ${s.assignee === 'Выполнено' ? 'selected' : ''} style="color: #2ecc71; font-weight: bold;">Выполнено</option>
+        </select>
+    ` : `
+        ${s.assignee === 'Выполнено' ? 
+            `<span class="pill completed">Выполнено</span>` : 
+            `<span class="pill ${s.assignee ? 'assigned' : 'waiting'}">
+                ${s.assignee ? escapeHtml(s.assignee) : 'В ожидании'}
+            </span>`
+        }
+    `}
+</td>
         <td><span class="pill" style="background:var(--accent-soft); color:var(--accent); border-color:rgba(216,255,56,.2);">${escapeHtml(s.format||'—')}</span></td>
         <td><div class="size-pills">${(s.sizes||[]).map(sz=>`<span class="size-pill">${escapeHtml(sz)}</span>`).join('')}</div></td>
         <td><strong style="color:var(--text)">${escapeHtml(s.carModel)}</strong></td>
