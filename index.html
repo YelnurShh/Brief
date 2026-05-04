@@ -266,7 +266,7 @@
 
 
   /* MATERIALS PANEL */
-  .hero-grid{ display:grid; grid-template-columns:1fr 400px; gap:48px; align-items:start;}
+  .hero-grid{ display:grid; grid-template-columns:1fr auto; gap:48px; align-items:end;}
   .materials-panel{ background:var(--surface); border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:var(--shadow);}
   .materials-panel-head{ padding:18px 20px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:12px;}
   .materials-panel-title{ font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.18em; color:var(--accent);}
@@ -293,6 +293,25 @@
   .mat-input::placeholder{ color:var(--muted);}
   .btn-save-mat{ border:0; cursor:pointer; padding:7px 12px; border-radius:6px; font-family:'Manrope',sans-serif; font-size:12px; font-weight:600; background:var(--accent); color:#000; white-space:nowrap; transition:all .15s;}
   .btn-cancel-mat{ border:1px solid var(--line-2); cursor:pointer; padding:7px 10px; border-radius:6px; font-family:'Manrope',sans-serif; font-size:12px; background:transparent; color:var(--muted); white-space:nowrap; transition:all .15s;}
+  .btn-cancel-mat:hover{ color:var(--text); background:var(--surface);}
+
+  .mat-row{ display:grid; grid-template-columns:1fr 1fr auto; align-items:center; border-bottom:1px solid var(--line); transition:background .15s;}
+  .mat-row:last-child{ border-bottom:0;}
+  .mat-row:hover{ background:var(--surface-2);}
+  .mat-name{ padding:16px 20px; font-size:14px; font-weight:500; color:var(--text); word-break:break-word;}
+  .mat-link-cell{ padding:16px 20px;}
+  .mat-link{ display:inline-flex; align-items:center; gap:6px; color:var(--accent); font-size:13px; font-family:'JetBrains Mono',monospace; text-decoration:none; transition:opacity .15s;}
+  .mat-link:hover{ opacity:.75;}
+  .mat-link svg{ width:13px; height:13px; flex-shrink:0;}
+  .mat-actions{ padding:12px 16px; display:flex; gap:4px;}
+  .mat-del{ border:0; background:transparent; cursor:pointer; width:32px; height:32px; border-radius:6px; display:grid; place-items:center; color:var(--muted); transition:all .15s;}
+  .mat-del:hover{ background:rgba(255,85,56,.12); color:var(--red);}
+  .mat-edit-row{ display:grid; grid-template-columns:1fr 1fr auto; align-items:center; gap:10px; padding:12px 16px; border-bottom:1px solid var(--line); background:var(--surface-2);}
+  .mat-input{ width:100%; background:var(--bg); border:1px solid var(--line-2); border-radius:6px; padding:10px 12px; font-family:'Manrope',sans-serif; font-size:13px; color:var(--text); transition:all .2s;}
+  .mat-input:focus{ outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(255,213,121,.08);}
+  .mat-input::placeholder{ color:var(--muted);}
+  .btn-save-mat{ border:0; cursor:pointer; padding:8px 14px; border-radius:6px; font-family:'Manrope',sans-serif; font-size:12px; font-weight:600; background:var(--accent); color:#000; white-space:nowrap; transition:all .15s;}
+  .btn-cancel-mat{ border:1px solid var(--line-2); cursor:pointer; padding:8px 12px; border-radius:6px; font-family:'Manrope',sans-serif; font-size:12px; background:transparent; color:var(--muted); white-space:nowrap; transition:all .15s;}
   .btn-cancel-mat:hover{ color:var(--text); background:var(--surface);}
 
   /* ═══════════════════════════════════════════════════════════
@@ -577,6 +596,10 @@
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
         Заявки <span class="tab-count" id="tabCount">0</span>
       </button>
+      <button class="tab" data-view="materials">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+  Материалы
+</button>
     </div>
 
     <div class="nav-meta">
@@ -587,6 +610,35 @@
 </header>
 
 <main class="wrap">
+
+  <section class="view" id="view-materials">
+  <div class="table-head">
+    <div>
+      <div class="crumb">
+        <span class="crumb-tag" id="matCount">0</span>
+        <span>ссылок</span>
+      </div>
+      <h2>Ссылки на <em>материалы</em></h2>
+    </div>
+    <div class="table-actions">
+      <button class="btn btn-primary btn-sm" id="btnCreate" style="display:none;" onclick="addMaterialRow()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Создать
+      </button>
+    </div>
+  </div>
+
+  <div class="table-card">
+    <div class="mat-cols-header" style="display:grid; grid-template-columns:1fr 1fr auto; border-bottom:1px solid var(--line);">
+      <span class="mat-col-label" style="font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.16em; color:var(--muted); padding:14px 20px;">Наименование</span>
+      <span class="mat-col-label" style="font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:.16em; color:var(--muted); padding:14px 20px;">Ссылка</span>
+      <span style="width:60px;"></span>
+    </div>
+    <div id="matList">
+      <div class="mat-empty" id="matEmpty" style="padding:64px 40px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--muted);">Ссылки не добавлены</div>
+    </div>
+  </div>
+</section>
 
   <section class="view active loaded" id="view-form">
 
@@ -606,21 +658,21 @@
             <span class="accent">дизайн</span>
           </h1>
         </div>
-        <div class="materials-panel">
-  <div class="materials-panel-head">
-    <span class="materials-panel-title">Ссылки на материалы</span>
-    <button class="btn-create" id="btnCreate" style="display:none;" onclick="addMaterialRow()">
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      Создать
-    </button>
-  </div>
-  <div class="mat-cols-header">
-    <span class="mat-col-label">Наименование</span>
-    <span class="mat-col-label">Ссылка</span>
-    <span style="width:44px;"></span>
-  </div>
-  <div class="mat-list" id="matList">
-    <div class="mat-empty" id="matEmpty">Ссылки не добавлены</div>
+       <div class="hero-side">
+  <p>Опиши задачу — собери макет. Чем подробнее заполнишь бриф, тем быстрее команда выдаст финальный визуал без бесконечных правок.</p>
+  <div class="stat-strip">
+    <div class="stat">
+      <div class="stat-num">3<span class="unit">дн.</span></div>
+      <div class="stat-lbl">срок</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">12</div>
+      <div class="stat-lbl">полей</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">6<span class="unit">/день</span></div>
+      <div class="stat-lbl">лимит</div>
+    </div>
   </div>
 </div>
       </div>
