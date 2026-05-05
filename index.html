@@ -1122,27 +1122,13 @@ async function loadSubmissions(){
   }
 }
 
-  function switchView(name){
+ function switchView(name){
     document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.view===name));
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
     const v = document.getElementById('view-'+name);
     v.classList.add('active','loaded');
-
-    if(name==='table'){
-      const overlay = document.getElementById('loadingOverlay');
-      overlay.classList.add('show');
-      loadSubmissions().then(()=>{
-        updateCount();
-        renderTable();
-      }).finally(()=> overlay.classList.remove('show'));
-    }
-
-    if(name==='materials'){
-      const overlay = document.getElementById('loadingOverlay');
-      overlay.classList.add('show');
-      loadMaterials().finally(()=> overlay.classList.remove('show'));
-    }
-
+    if(name==='table'){ loadSubmissions().then(()=>{ updateCount(); renderTable(); }); }
+    if(name==='materials'){ loadMaterials(); }
     window.scrollTo({top:0, behavior:'smooth'});
   }
   window.switchView = switchView;
@@ -1647,13 +1633,19 @@ window.saveMaterialRow = async function(){
   fd.append('action', 'addMaterial');
   fd.append('name', name);
   fd.append('url', url);
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.classList.add('show');
   try {
     await fetch(SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
     _materialsCache = null;
     materials.push({ name, url, createdAt: new Date().toISOString() });
     renderMaterials();
     showToast('Ссылка добавлена');
-  } catch(e) { showToast('Ошибка сохранения', 'error'); }
+  } catch(e) {
+    showToast('Ошибка сохранения', 'error');
+  } finally {
+    overlay.classList.remove('show');
+  }
 };
 
 window.deleteMaterial = async function(i){
@@ -1661,13 +1653,19 @@ window.deleteMaterial = async function(i){
   const fd = new FormData();
   fd.append('action', 'deleteMaterial');
   fd.append('index', i);
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.classList.add('show');
   try {
     await fetch(SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
     _materialsCache = null;
     materials.splice(i, 1);
     renderMaterials();
     showToast('Удалено');
-  } catch(e) { showToast('Ошибка удаления', 'error'); }
+  } catch(e) {
+    showToast('Ошибка удаления', 'error');
+  } finally {
+    overlay.classList.remove('show');
+  }
 };
 </script>
 </body>
