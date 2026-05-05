@@ -1098,25 +1098,51 @@
   window.addEventListener('DOMContentLoaded', loadDraft);
 
   // СЕРВЕРДЕН ОҚУ
-  async function loadSubmissions(){
-    try{
-      const response = await fetch(SCRIPT_URL);
-      const data = await response.json();
-      if(Array.isArray(data)){
-        submissions = data;
-      }
-    }catch(e){
-      console.error(e);
-      showToast('Не удалось загрузить заявки', 'error');
-    }
+  let _submissionsCache = null;
+let _submissionsCacheTime = 0;
+const CACHE_TTL = 60000; // 60 сек
+
+async function loadSubmissions(){
+  const now = Date.now();
+  if(_submissionsCache && (now - _submissionsCacheTime) < CACHE_TTL){
+    submissions = _submissionsCache;
+    return;
   }
+  try{
+    const response = await fetch(SCRIPT_URL);
+    const data = await response.json();
+    if(Array.isArray(data)){
+      submissions = data;
+      _submissionsCache = data;
+      _submissionsCacheTime = now;
+    }
+  }catch(e){
+    console.error(e);
+    showToast('Не удалось загрузить заявки', 'error');
+  }
+}
 
   function switchView(name){
     document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.dataset.view===name));
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
     const v = document.getElementById('view-'+name);
     v.classList.add('active','loaded');
-    if(name==='table') renderTable();
+
+    if(name==='table'){
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('show');
+      loadSubmissions().then(()=>{
+        updateCount();
+        renderTable();
+      }).finally(()=> overlay.classList.remove('show'));
+    }
+
+    if(name==='materials'){
+      const overlay = document.getElementById('loadingOverlay');
+      overlay.classList.add('show');
+      loadMaterials().finally(()=> overlay.classList.remove('show'));
+    }
+
     window.scrollTo({top:0, behavior:'smooth'});
   }
   window.switchView = switchView;
@@ -1390,6 +1416,7 @@
       body: fd,
       mode: 'no-cors'
     });
+    _submissionsCache = null; // кэшті тазала
     // Response оқылмайды (no-cors), бірақ Sheets-ке жазылады
     const sub = submissions.find(s => s.id === id);
     if (sub) sub.assignee = assigneeName;
@@ -1529,16 +1556,10 @@ Email: ${s.email}
   });
 
   (async ()=>{
-    const overlay = document.getElementById('loadingOverlay');
-    overlay.classList.add('show');
-    try {
-      await loadSubmissions();
-      updateCount();
-      renderTable();
-      await loadMaterials();
-    } finally {
-      overlay.classList.remove('show');
-    }
+    await loadSubmissions();
+    updateCount();
+    renderTable();
+    await loadMaterials();
   })();
 
 
@@ -1547,11 +1568,25 @@ let materials = [];
 
 if(isAdmin) document.getElementById('btnCreate').style.display = 'inline-flex';
 
+let _materialsCache = null;
+let _materialsCacheTime = 0;
+
 async function loadMaterials() {
+  const now = Date.now();
+  if(_materialsCache && (now - _materialsCacheTime) < CACHE_TTL){
+    materials = _materialsCache;
+    renderMaterials();
+    return;
+  }
   try {
     const r = await fetch(SCRIPT_URL + '?action=materials');
     const data = await r.json();
-    if(Array.isArray(data)) { materials = data; renderMaterials(); }
+    if(Array.isArray(data)){
+      materials = data;
+      _materialsCache = data;
+      _materialsCacheTime = now;
+      renderMaterials();
+    }
   } catch(e) { console.error('Materials load error', e); }
 }
 
@@ -1614,6 +1649,7 @@ window.saveMaterialRow = async function(){
   fd.append('url', url);
   try {
     await fetch(SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
+    _materialsCache = null;
     materials.push({ name, url, createdAt: new Date().toISOString() });
     renderMaterials();
     showToast('Ссылка добавлена');
@@ -1627,6 +1663,7 @@ window.deleteMaterial = async function(i){
   fd.append('index', i);
   try {
     await fetch(SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
+    _materialsCache = null;
     materials.splice(i, 1);
     renderMaterials();
     showToast('Удалено');
