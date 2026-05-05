@@ -266,6 +266,12 @@
   @keyframes rise{ from{ opacity:0; transform:translateY(24px);} to{ opacity:1; transform:translateY(0);}}
   @keyframes spin{ to{transform:rotate(360deg);}}
 
+  .loading-overlay{ position:fixed; inset:0; background:rgba(11,11,12,.6); backdrop-filter:blur(4px); display:flex; align-items:center; justify-content:center; z-index:300; opacity:0; pointer-events:none; transition:opacity .25s;}
+  .loading-overlay.show{ opacity:1; pointer-events:all;}
+  .loading-spinner{ display:flex; flex-direction:column; align-items:center; gap:16px;}
+  .loading-spinner svg{ animation:spin 1s linear infinite; color:var(--accent);}
+  .loading-spinner span{ font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted); letter-spacing:.16em; text-transform:uppercase;}
+
 
   /* MATERIALS PANEL */
   .hero-grid{ display:grid; grid-template-columns:1fr auto; gap:48px; align-items:end;}
@@ -957,6 +963,15 @@
 
 </main>
 
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-spinner">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+    </svg>
+    <span>Загрузка данных...</span>
+  </div>
+</div>
+
 <footer>
   <div>© 2026 Brief Studio<span class="dot"></span>Внутренний инструмент</div>
   <div>
@@ -988,7 +1003,7 @@
 <script>
   // БАСҚАРУ АЙНЫМАЛЫЛАРЫ
   let submissions = [];
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzl7WPDBBqcvVzjy2zFzNHyHoAerhlQ_rCR6X_iG9w5sgtCbTgyzSls5-dU-0V9N3e5/exec';
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzgWvmlRpBE3Ke_rziOfcaqRBa2qJp9zyGcwnypORbOz5isfh4kePgmrizBgl7nH1ZB/exec';
   const MAX_REQUESTS_PER_DAY = 6;
 
   // АДМИН ТЕКСЕРІСІ
@@ -1514,24 +1529,42 @@ Email: ${s.email}
   });
 
   (async ()=>{
-    await loadSubmissions();
-    updateCount();
-    renderTable();
+    const overlay = document.getElementById('loadingOverlay');
+    overlay.classList.add('show');
+    try {
+      await loadSubmissions();
+      updateCount();
+      renderTable();
+      await loadMaterials();
+    } finally {
+      overlay.classList.remove('show');
+    }
   })();
 
 
-  // ═══ MATERIALS ═══
-const MAT_KEY = 'briefMaterials_v1';
-let materials = JSON.parse(localStorage.getItem(MAT_KEY) || '[]');
+// ═══ MATERIALS ═══
+let materials = [];
 
 if(isAdmin) document.getElementById('btnCreate').style.display = 'inline-flex';
 
-function saveMaterials(){ localStorage.setItem(MAT_KEY, JSON.stringify(materials)); }
+async function loadMaterials() {
+  try {
+    const r = await fetch(SCRIPT_URL + '?action=materials');
+    const data = await r.json();
+    if(Array.isArray(data)) { materials = data; renderMaterials(); }
+  } catch(e) { console.error('Materials load error', e); }
+}
+
+function updateMatCount() {
+  const el = document.getElementById('matCount');
+  if(el) el.textContent = materials.length;
+}
 
 function renderMaterials(){
   const list = document.getElementById('matList');
   const empty = document.getElementById('matEmpty');
   list.querySelectorAll('.mat-row, .mat-edit-row').forEach(r => r.remove());
+  updateMatCount();
   if(materials.length === 0){ empty.style.display = 'block'; return; }
   empty.style.display = 'none';
   materials.forEach((m, i) => {
@@ -1571,25 +1604,34 @@ window.addMaterialRow = function(){
   document.getElementById('newMatName').focus();
 };
 
-window.saveMaterialRow = function(){
+window.saveMaterialRow = async function(){
   const name = (document.getElementById('newMatName').value || '').trim();
   const url  = (document.getElementById('newMatUrl').value  || '').trim();
   if(!name || !url){ showToast('Заполните оба поля', 'error'); return; }
-  materials.push({ name, url, createdAt: new Date().toISOString() });
-  saveMaterials();
-  renderMaterials();
-  showToast('Ссылка добавлена');
+  const fd = new FormData();
+  fd.append('action', 'addMaterial');
+  fd.append('name', name);
+  fd.append('url', url);
+  try {
+    await fetch(SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
+    materials.push({ name, url, createdAt: new Date().toISOString() });
+    renderMaterials();
+    showToast('Ссылка добавлена');
+  } catch(e) { showToast('Ошибка сохранения', 'error'); }
 };
 
-window.deleteMaterial = function(i){
+window.deleteMaterial = async function(i){
   if(!confirm('Удалить эту ссылку?')) return;
-  materials.splice(i, 1);
-  saveMaterials();
-  renderMaterials();
-  showToast('Удалено');
+  const fd = new FormData();
+  fd.append('action', 'deleteMaterial');
+  fd.append('index', i);
+  try {
+    await fetch(SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
+    materials.splice(i, 1);
+    renderMaterials();
+    showToast('Удалено');
+  } catch(e) { showToast('Ошибка удаления', 'error'); }
 };
-
-renderMaterials();
 </script>
 </body>
 </html>
