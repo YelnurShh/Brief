@@ -7,7 +7,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;600&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
 <style>
+
+  /* LOGIN */
+  .login-overlay{ position:fixed; inset:0; background:var(--bg); z-index:500; display:flex; align-items:center; justify-content:center; padding:24px;}
+  .login-card{ background:var(--surface); border:1px solid var(--line); border-radius:20px; padding:48px 40px; max-width:420px; width:100%; box-shadow:var(--shadow); position:relative; overflow:hidden;}
+  .login-card::before{ content:""; position:absolute; top:-120px; left:50%; transform:translateX(-50%); width:280px; height:280px; background:radial-gradient(circle, rgba(255,213,121,.15), transparent 60%); pointer-events:none;}
+  .login-logo{ display:flex; justify-content:center; margin-bottom:32px;}
+  .login-title{ font-family:'Bricolage Grotesque',sans-serif; font-size:32px; font-weight:500; letter-spacing:-.02em; text-align:center; margin-bottom:8px;}
+  .login-title em{ font-style:italic; color:var(--accent);}
+  .login-sub{ font-size:13px; color:var(--muted); text-align:center; margin-bottom:32px; font-family:'JetBrains Mono',monospace; letter-spacing:.06em;}
+  .login-field{ margin-bottom:16px;}
+  .login-field label{ display:block; font-size:12px; font-weight:500; color:var(--text-2); margin-bottom:8px; font-family:'JetBrains Mono',monospace; text-transform:uppercase; letter-spacing:.1em;}
+  .login-error{ background:rgba(255,85,56,.08); border:1px solid rgba(255,85,56,.3); border-radius:8px; padding:10px 14px; color:var(--red); font-size:13px; margin-bottom:16px; display:none;}
+  .login-error.show{ display:block;}
+  .btn-login{ width:100%; padding:14px; background:var(--accent); color:#000; border:0; border-radius:10px; font-family:'Manrope',sans-serif; font-size:14px; font-weight:700; cursor:pointer; transition:all .2s; margin-top:8px;}
+  .btn-login:hover{ transform:translateY(-2px); box-shadow:0 12px 32px rgba(255,213,121,.4);}
+  .btn-login:disabled{ opacity:.6; cursor:wait; transform:none;}
+
   :root{
     --bg:#0B0B0C;
     --bg-2:#111114;
@@ -611,13 +630,36 @@
     </div>
 
     <div class="nav-meta">
-      <span class="live" id="adminIndicator" style="display:none; background: #FF5538; box-shadow:0 0 8px #FF5538;"></span>
-      <span><span id="roleText">Online</span> · <span id="navTime">--:--</span></span>
-    </div>
+  <span class="live" id="adminIndicator" style="display:none; background: #FF5538; box-shadow:0 0 8px #FF5538;"></span>
+  <span><span id="roleText">Online</span> · <span id="navTime">--:--</span></span>
+  <button onclick="clearSession()" style="border:1px solid var(--line-2); background:transparent; color:var(--muted); padding:6px 12px; border-radius:7px; font-family:'JetBrains Mono',monospace; font-size:10px; cursor:pointer; letter-spacing:.08em; transition:all .2s;" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted)'">
+    ВЫЙТИ
+  </button>
+</div>
   </div>
 </header>
 
 <main class="wrap">
+
+  <div class="login-overlay" id="loginOverlay">
+  <div class="login-card">
+    <div class="login-logo">
+      <img src="3.png" alt="Brief" style="height:44px; width:auto;">
+    </div>
+    <h2 class="login-title"><b>Войти</b></h2>
+    <p class="login-sub">Графический дизайн · Changan</p>
+    <div class="login-error" id="loginError">Неверный логин или пароль</div>
+    <div class="login-field">
+      <label>Логин</label>
+      <input class="input" type="text" id="loginInput" placeholder="Логин..." autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label>Пароль</label>
+      <input class="input" type="password" id="passwordInput" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">Войти →</button>
+  </div>
+</div>
 
   <section class="view" id="view-materials">
   <div class="table-head">
@@ -847,13 +889,22 @@
             <input class="input" type="text" name="headline" data-required placeholder="Премиум-седан по цене кроссовера">
           </div>
 
-          <div class="field">
-            <label class="lbl">
-              <span>Призыв к действию / УТП<span class="req"> *</span></span>
-              <span class="hint">что сделать клиенту</span>
-            </label>
-            <input class="input" type="text" name="cta" data-required placeholder="Закажите тест-драйв до 31 мая">
-          </div>
+         <div class="field-row">
+  <div class="field">
+    <label class="lbl">
+      <span>Призыв к действию<span class="req"> *</span></span>
+      <span class="hint">что сделать клиенту</span>
+    </label>
+    <input class="input" type="text" name="cta" data-required placeholder="Закажите тест-драйв до 31 мая">
+  </div>
+  <div class="field">
+    <label class="lbl">
+      <span>УТП<span class="req"> *</span></span>
+      <span class="hint">уникальное предложение</span>
+    </label>
+    <input class="input" type="text" name="utp" data-required placeholder="Скидка до 1 500 000 ₸">
+  </div>
+</div>
 
           <div class="field">
             <label class="lbl">
@@ -975,8 +1026,7 @@
 <footer>
   <div>© 2026 Brief Studio<span class="dot"></span>Внутренний инструмент</div>
   <div>
-    <span class="admin-login" onclick="toggleAdmin()" id="adminBtnText">Вход для админа</span>
-    <span class="dot"></span>Made with craft
+    <span id="adminBtnText" style="display:none;"></span>Made with craft
   </div>
 </footer>
 
@@ -1001,10 +1051,95 @@
 </div>
 
 <script>
+
+  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzSuNzHkA0rGC1XaYcUrCbStrxnNbLjRddSpAZVE2trl9rFXUQ1IJNHglJ7ykj_BNyq/exec';
+  const MAX_REQUESTS_PER_DAY = 6;
+
+  // ═══ AUTH ═══
+const SESSION_KEY = 'briefSession_v1';
+let currentUser = null;
+
+function getSession() {
+  try { return JSON.parse(localStorage.getItem(SESSION_KEY)); } catch{ return null; }
+}
+function setSession(user) {
+  localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+  currentUser = user;
+}
+function clearSession() {
+  localStorage.removeItem(SESSION_KEY);
+  localStorage.removeItem('isAdmin');
+  location.reload();
+}
+
+async function doLogin() {
+  const login    = document.getElementById('loginInput').value.trim();
+  const password = document.getElementById('passwordInput').value.trim();
+  const errEl    = document.getElementById('loginError');
+  const btn      = document.getElementById('loginBtn');
+  if (!login || !password) {
+    errEl.textContent = 'Введите логин и пароль';
+    errEl.classList.add('show'); return;
+  }
+  btn.disabled = true; btn.textContent = 'Проверка...';
+  errEl.classList.remove('show');
+  try {
+    const r = await fetch(`${SCRIPT_URL}?action=login&login=${encodeURIComponent(login)}&password=${encodeURIComponent(password)}`);
+    const data = await r.json();
+    if (data.ok) {
+      setSession({ login, name: data.name, role: data.role });
+      location.reload();
+      applySession(data.role, data.name);
+      document.getElementById('loginOverlay').style.display = 'none';
+      loadSubmissions().then(()=>{ updateCount(); renderTable(); });
+      loadMaterials();
+    } else {
+      errEl.textContent = data.error || 'Неверный логин или пароль';
+      errEl.classList.add('show');
+    }
+  } catch(e) {
+    errEl.textContent = 'Ошибка соединения. Попробуйте снова.';
+    errEl.classList.add('show');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Войти →';
+  }
+}
+
+function applySession(role, name) {
+  document.getElementById('roleText').textContent = name;
+  if (role === 'admin') {
+    localStorage.setItem('isAdmin', 'true');
+    document.getElementById('roleText').style.color = '#FF5538';
+    document.getElementById('adminIndicator').style.display = 'inline-block';
+    document.getElementById('adminBtnText').textContent = 'Выйти';
+    document.getElementById('exportBtn').style.display = 'inline-flex';
+    document.getElementById('btnCreate').style.display = 'inline-flex';
+  } else {
+    localStorage.removeItem('isAdmin');
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('loginOverlay') &&
+      document.getElementById('loginOverlay').style.display !== 'none') {
+    doLogin();
+  }
+});
+
+// Сессияны тексер — бет жүктелгенде
+(function checkAuth() {
+  const session = getSession();
+  if (session) {
+    currentUser = session;
+    document.getElementById('loginOverlay').style.display = 'none';
+    applySession(session.role, session.name);
+  } else {
+    document.getElementById('loginOverlay').style.display = 'flex';
+  }
+})();
   // БАСҚАРУ АЙНЫМАЛЫЛАРЫ
   let submissions = [];
-  const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzgWvmlRpBE3Ke_rziOfcaqRBa2qJp9zyGcwnypORbOz5isfh4kePgmrizBgl7nH1ZB/exec';
-  const MAX_REQUESTS_PER_DAY = 6;
+
 
   // АДМИН ТЕКСЕРІСІ
   const isAdmin = localStorage.getItem('isAdmin') === 'true';
@@ -1018,19 +1153,8 @@
   }
 
   window.toggleAdmin = function() {
-    if (isAdmin) {
-      localStorage.removeItem('isAdmin');
-      location.reload();
-    } else {
-      const pass = prompt('Введите пароль администратора:');
-      if (pass === 'xanburkit1999') {
-        localStorage.setItem('isAdmin', 'true');
-        location.reload();
-      } else if (pass !== null) {
-        alert('Неверный пароль!');
-      }
-    }
-  }
+  clearSession();
+}
 
   // ТЕЛЕФОН МАСКАСЫ
   const phoneInput = document.getElementById('phoneInput');
@@ -1108,6 +1232,8 @@ async function loadSubmissions(){
     submissions = _submissionsCache;
     return;
   }
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.classList.add('show');
   try{
     const response = await fetch(SCRIPT_URL);
     const data = await response.json();
@@ -1119,6 +1245,8 @@ async function loadSubmissions(){
   }catch(e){
     console.error(e);
     showToast('Не удалось загрузить заявки', 'error');
+  } finally {
+    overlay.classList.remove('show');
   }
 }
 
@@ -1280,6 +1408,7 @@ async function loadSubmissions(){
     carModel: fd.get('carModel'),
     headline: fd.get('headline'),
     cta: fd.get('cta'),
+    utp: fd.get('utp') || '',
     subtext: fd.get('subtext') || '',
     disclaimer: fd.get('disclaimer') || '',
     visual: fd.get('visual'),
@@ -1412,90 +1541,129 @@ async function loadSubmissions(){
   }
 }
 
+window.saveComment = async function(id) {
+  const textarea = document.getElementById('comment-' + id);
+  if (!textarea) return;
+  const comment = textarea.value;
+
+  const fd = new FormData();
+  fd.append('action', 'saveComment');
+  fd.append('id', id);
+  fd.append('comment', comment);
+
+  try {
+    await fetch(SCRIPT_URL, { method: 'POST', body: fd, mode: 'no-cors' });
+    _submissionsCache = null;
+    const sub = submissions.find(s => s.id === id);
+    if (sub) sub.comment = comment;
+    showToast('Ответ сохранён!');
+  } catch(e) {
+    showToast('Ошибка сохранения', 'error');
+  }
+}
+
   function renderTable(filterText=''){
-    const tbody = document.getElementById('tbody');
-    const empty = document.getElementById('empty');
-    const table = document.getElementById('briefsTable');
-    const f = filterText.toLowerCase().trim();
-    const rows = submissions.filter(s=>{
-      if(!f) return true;
-      return [s.dealer,s.email,s.carModel,s.headline,s.format,s.cta,s.assignee].join(' ').toLowerCase().includes(f);
-    });
+  const tbody = document.getElementById('tbody');
+  const empty = document.getElementById('empty');
+  const table = document.getElementById('briefsTable');
+  const f = filterText.toLowerCase().trim();
+  const rows = submissions.filter(s=>{
+    if(!f) return true;
+    return [s.dealer,s.email,s.carModel,s.headline,s.format,s.cta,s.assignee].join(' ').toLowerCase().includes(f);
+  });
 
-    document.getElementById('totalCount').textContent = submissions.length;
+  document.getElementById('totalCount').textContent = submissions.length;
 
-    if(rows.length===0){
-      table.style.display='none'; empty.style.display='block';
-      empty.querySelector('h3').textContent = submissions.length===0 ? 'Пока нет заявок' : 'Ничего не найдено';
-      empty.querySelector('p').textContent = submissions.length===0 ? 'Заполни форму во вкладке слева — заявка автоматически появится здесь.' : 'Попробуй другой запрос.';
-      return;
-    }
-    table.style.display=''; empty.style.display='none';
+  if(rows.length===0){
+    table.style.display='none'; empty.style.display='block';
+    empty.querySelector('h3').textContent = submissions.length===0 ? 'Пока нет заявок' : 'Ничего не найдено';
+    empty.querySelector('p').textContent = submissions.length===0 ? 'Заполни форму во вкладке слева — заявка автоматически появится здесь.' : 'Попробуй другой запрос.';
+    return;
+  }
+  table.style.display=''; empty.style.display='none';
 
-    tbody.innerHTML = rows.map(s=>`
-      <tr class="row" data-id="${s.id}">
-        <td><span class="cell-id">${escapeHtml(s.id)}</span></td>
-        <td>
-          <span class="cell-dealer">${escapeHtml(s.dealer)}</span>
-          <span class="cell-dealer-sub">${escapeHtml(s.email)}</span>
-        </td>
-        <td onclick="event.stopPropagation()">
-    ${isAdmin ? `
-        <select class="assignee-select" onchange="assignSpecialist('${s.id}', this.value)">
+  tbody.innerHTML = rows.map(s=>`
+    <tr class="row" data-id="${s.id}" style="${isAdmin ? 'cursor:pointer;' : 'cursor:default;'}">
+      <td><span class="cell-id">${escapeHtml(s.id)}</span></td>
+      <td>
+        <span class="cell-dealer">${escapeHtml(s.dealer)}</span>
+        <span class="cell-dealer-sub">${escapeHtml(s.email)}</span>
+      </td>
+      <td onclick="event.stopPropagation()">
+        ${isAdmin ? `
+          <select class="assignee-select" onchange="assignSpecialist('${s.id}', this.value)">
             <option value="" ${!s.assignee ? 'selected' : ''}>Не назначен</option>
             <option value="Ханбүркіт" ${s.assignee === 'Ханбүркіт' ? 'selected' : ''}>Ханбүркіт</option>
             <option value="Алишер" ${s.assignee === 'Алишер' ? 'selected' : ''}>Алишер</option>
-            <!-- Жаңа статус: Выполнено -->
-            <option value="Выполнено" ${s.assignee === 'Выполнено' ? 'selected' : ''} style="color: #2ecc71; font-weight: bold;">Выполнено</option>
-        </select>
+            <option value="Выполнено" ${s.assignee === 'Выполнено' ? 'selected' : ''} style="color:#2ecc71;font-weight:bold;">Выполнено</option>
+          </select>
+        ` : `
+          ${s.assignee === 'Выполнено' ? `<span class="pill done">Выполнено</span>` :
+            s.assignee === 'Ханбүркіт' ? `<span class="pill assigned-blue">Ханбүркіт</span>` :
+            s.assignee === 'Алишер' ? `<span class="pill assigned-green">Алишер</span>` :
+            `<span class="pill waiting">В ожидании</span>`}
+        `}
+      </td>
+      <td><span class="pill" style="background:var(--accent-soft); color:var(--accent); border-color:rgba(216,255,56,.2);">${escapeHtml(s.format||'—')}</span></td>
+      <td><div class="size-pills">${(s.sizes||[]).map(sz=>`<span class="size-pill">${escapeHtml(sz)}</span>`).join('')}</div></td>
+      <td><strong style="color:var(--text)">${escapeHtml(s.carModel)}</strong></td>
+      <td>
+        <span class="cell-date" style="color:var(--text);">${fmtDateShort(s.appDate)}</span>
+        <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--red);margin-top:3px;">до ${getDeadline(s.appDate, 3)}</span>
+      </td>
+    </tr>
+   ${(isAdmin || (s.comment && s.userLogin === (currentUser && currentUser.login))) ? `
+<tr class="expand-row" data-expand="${s.id}" style="display:none;">
+      <td colspan="7">
+        <div class="expand-inner">
+  ${isAdmin ? `
+    <div><div class="expand-label">Заголовок</div><div class="expand-value">${escapeHtml(s.headline)||'—'}</div></div>
+    <div><div class="expand-label">Призыв к действию</div><div class="expand-value">${escapeHtml(s.cta)||'—'}</div></div>
+    <div><div class="expand-label">УТП</div><div class="expand-value">${escapeHtml(s.utp)||'—'}</div></div>
+    <div><div class="expand-label">Подзаголовок</div><div class="expand-value">${escapeHtml(s.subtext)||'—'}</div></div>
+    <div><div class="expand-label">Дисклеймер</div><div class="expand-value">${escapeHtml(s.disclaimer)||'—'}</div></div>
+    <div><div class="expand-label">Телефон</div><div class="expand-value">${escapeHtml(s.phone)||'—'}</div></div>
+    <div style="grid-column:1 / -1;"><div class="expand-label">Визуал / референсы</div><div class="expand-value" style="white-space:pre-wrap;word-break:break-word;">${linkify(s.visual)||'—'}</div></div>
+  ` : ''}
+  <div style="grid-column:1 / -1;">
+    <div class="expand-label" style="margin-bottom:10px;">${isAdmin ? 'Ответ дизайнера' : '💬 Ответ от дизайн-команды'}</div>
+    ${isAdmin ? `
+      <textarea id="comment-${s.id}" class="textarea" style="min-height:100px; font-size:13px;" placeholder="Введите ответ, ссылку на макет или комментарий...">${escapeHtml(s.comment||'')}</textarea>
+      <div style="display:flex; gap:8px; margin-top:10px; flex-wrap:wrap;">
+        <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); saveComment('${s.id}')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          Сохранить ответ
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); copyToClipboard('${s.id}')">Скопировать</button>
+      </div>
     ` : `
-        ${s.assignee === 'Выполнено' ? 
-    `<span class="pill done">Выполнено</span>` : 
-    s.assignee === 'Ханбүркіт' ?
-    `<span class="pill assigned-blue">Ханбүркіт</span>` :
-    s.assignee === 'Алишер' ?
-    `<span class="pill assigned-green">Алишер</span>` :
-    `<span class="pill waiting">В ожидании</span>`
-}
+      <div class="expand-value" style="white-space:pre-wrap; word-break:break-word; padding:16px; background:var(--bg); border:1px solid var(--line); border-radius:8px; line-height:1.6;">${linkify(s.comment||'')}</div>
     `}
-</td>
-        <td><span class="pill" style="background:var(--accent-soft); color:var(--accent); border-color:rgba(216,255,56,.2);">${escapeHtml(s.format||'—')}</span></td>
-        <td><div class="size-pills">${(s.sizes||[]).map(sz=>`<span class="size-pill">${escapeHtml(sz)}</span>`).join('')}</div></td>
-        <td><strong style="color:var(--text)">${escapeHtml(s.carModel)}</strong></td>
-        <td>
-          <span class="cell-date" style="color: var(--text);">${fmtDateShort(s.appDate)}</span>
-          <span style="display:block; font-family:'JetBrains Mono',monospace; font-size:10px; color:var(--red); margin-top:3px;">
-            до ${getDeadline(s.appDate, 3)}
-          </span>
-        </td>
-      </tr>
-      <tr class="expand-row" data-expand="${s.id}" style="display:none;">
-        <td colspan="7">
-          <div class="expand-inner">
-            <div><div class="expand-label">Заголовок</div><div class="expand-value">${escapeHtml(s.headline)||'—'}</div></div>
-            <div><div class="expand-label">Призыв / УТП</div><div class="expand-value">${escapeHtml(s.cta)||'—'}</div></div>
-            <div><div class="expand-label">Подзаголовок</div><div class="expand-value">${escapeHtml(s.subtext)||'—'}</div></div>
-            <div><div class="expand-label">Дисклеймер</div><div class="expand-value">${escapeHtml(s.disclaimer)||'—'}</div></div>
-            <div style="grid-column:1 / -1;"><div class="expand-label">Визуал / референсы</div><div class="expand-value" style="white-space:pre-wrap; word-break:break-word;">${linkify(s.visual)||'—'}</div></div>
-            <div class="expand-actions">
-              <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation(); copyToClipboard('${s.id}')">Скопировать</button>
-            </div>
-          </div>
-        </td>
-      </tr>
-    `).join('');
+  </div>
+</div>
+      </td>
+    </tr>
+    ` : ''}
+  `).join('');
 
-    tbody.querySelectorAll('tr.row').forEach(r=>{
-      r.addEventListener('click', ()=>{
-        const id = r.dataset.id;
-        const ex = tbody.querySelector(`tr[data-expand="${id}"]`);
-        if(!ex) return;
-        const isOpen = ex.style.display !== 'none';
-        tbody.querySelectorAll('tr.expand-row').forEach(e=>e.style.display='none');
-        ex.style.display = isOpen ? 'none' : 'table-row';
-      });
-    });
-  }
+  tbody.querySelectorAll('tr.row').forEach(r=>{
+  r.addEventListener('click', ()=>{
+    const id = r.dataset.id;
+    const sub = submissions.find(s => s.id === id);
+
+    if (!isAdmin) {
+      const isOwn = currentUser && sub && sub.userLogin === currentUser.login;
+      if (!isOwn || !sub.comment) return;
+    }
+
+    const ex = tbody.querySelector(`tr[data-expand="${id}"]`);
+    if (!ex) return;
+    const isOpen = ex.style.display !== 'none';
+    tbody.querySelectorAll('tr.expand-row').forEach(e => e.style.display = 'none');
+    ex.style.display = isOpen ? 'none' : 'table-row';
+  });
+});
+}
 
   function updateCount(){
     document.getElementById('tabCount').textContent = submissions.length;
@@ -1503,9 +1671,9 @@ async function loadSubmissions(){
   }
 
   window.copyToClipboard = function(id){
-    const s = submissions.find(x=>x.id===id);
-    if(!s) return;
-    const text = `Бриф ${s.id}
+  const s = submissions.find(x=>x.id===id);
+  if(!s) return;
+  const text = `Бриф ${s.id}
 Дилер: ${s.dealer}
 Email: ${s.email}
 Телефон: ${s.phone}
@@ -1514,16 +1682,18 @@ Email: ${s.email}
 Размеры: ${(s.sizes||[]).join(', ')}
 Модель: ${s.carModel}
 Заголовок: ${s.headline}
-УТП/CTA: ${s.cta}
+Призыв к действию: ${s.cta}
+УТП: ${s.utp||'—'}
 Подзаголовок: ${s.subtext}
 Дисклеймер: ${s.disclaimer}
-Визуал: ${s.visual}`;
-    if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(text).then(()=>showToast('Скопировано'));
-    } else {
-      showToast('Копирование недоступно','error');
-    }
+Визуал: ${s.visual}
+Ответ: ${s.comment||'—'}`;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>showToast('Скопировано'));
+  } else {
+    showToast('Копирование недоступно','error');
   }
+}
 
   document.getElementById('search').addEventListener('input', e=>renderTable(e.target.value));
 
@@ -1541,12 +1711,6 @@ Email: ${s.email}
     showToast(`Экспортировано ${submissions.length} ${plural(submissions.length,'заявка','заявки','заявок')}`);
   });
 
-  (async ()=>{
-    await loadSubmissions();
-    updateCount();
-    renderTable();
-    await loadMaterials();
-  })();
 
 
 // ═══ MATERIALS ═══
@@ -1564,6 +1728,8 @@ async function loadMaterials() {
     renderMaterials();
     return;
   }
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.classList.add('show');
   try {
     const r = await fetch(SCRIPT_URL + '?action=materials');
     const data = await r.json();
@@ -1573,7 +1739,11 @@ async function loadMaterials() {
       _materialsCacheTime = now;
       renderMaterials();
     }
-  } catch(e) { console.error('Materials load error', e); }
+  } catch(e) {
+    console.error('Materials load error', e);
+  } finally {
+    overlay.classList.remove('show');
+  }
 }
 
 function updateMatCount() {
